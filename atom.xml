@@ -1,0 +1,998 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title>JPhenow</title>
+  <link href="http://edk.github.com/atom.xml" rel="self"/>
+  <link href="http://edk.github.com/"/>
+  <updated>2012-06-17T09:51:44-07:00</updated>
+  <id>http://edk.github.com/</id>
+  <author>
+    <name>Jon Phenow</name>
+    
+  </author>
+
+  
+  <entry>
+    <title>First Ruby/Rails impressions and a script to have you hit-the-ground-running</title>
+    <link href="http://edk.github.com/blog/2011/10/25/an-rvm-script-that-hits-the-ground-running/"/>
+    <updated>2011-10-25T23:26:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/10/25/an-rvm-script-that-hits-the-ground-running</id>
+    <content type="html">&lt;p&gt;In the past couple weeks I have been stupid kinds of obsessed with working on a &lt;a href=&quot;http://rubyonrails.org/&quot;&gt;Ruby on Rails&lt;/a&gt; application. The application idea came from a brother, but the awkward choice of RoR actually came from just hearing about Ruby on Rails. This seems odd - why attack a potentially complex problem with a new thing you might not fully understand. Well, that may be a good way to go about things in general, but I have this weird need to learn new things and Ruby on Rails just seems to be one of those ever exploding technologies. The farther I get into it the more I see that such an observation proves correct.&lt;/p&gt;
+
+&lt;p&gt;Ruby on Rails has such a great community around it which is largely in love with the &lt;a href=&quot;http://github.com&quot;&gt;Github&lt;/a&gt; awesomeness. Ruby allows quick installation of modules - even a module that will track your installations and check dependencies - most of which (if not all) is open source, generally available somewhere on github. There are great sites for &lt;a href=&quot;http://railscasts.com/&quot;&gt;tutorials&lt;/a&gt; and even &lt;a href=&quot;http://ruby.learncodethehardway.org/&quot;&gt;free books&lt;/a&gt; to get you up and running the fast way. Basically I&amp;#8217;m in love with it. Even as I continually learn the &lt;a href=&quot;http://www.ruby-lang.org/en/&quot;&gt;Ruby&lt;/a&gt; language further I&amp;#8217;m blown away. They&amp;#8217;re both (Ruby and Rails) so beautiful to work with. Not only do Ruby and Rails allow your actual code to look pretty (clean, clean, concise &lt;a href=&quot;http://en.wikipedia.org/wiki/Don%27t_repeat_yourself&quot;&gt;DRY&lt;/a&gt;) but, personally, I think the actual code syntax is pretty and easy to work with.&lt;/p&gt;
+
+&lt;p&gt;One thing I have learned about Ruby in the past few weeks is that a lot of people of projects on different versions of Ruby or they are using modules in specific versions - specific versions they&amp;#8217;d prefer not change without their expressed consent. &lt;a href=&quot;http://wayneseguin.us/&quot;&gt;Someone&lt;/a&gt; decided to go and impress everyone with a &lt;a href=&quot;http://beginrescueend.com/&quot;&gt;Ruby Version Manager&lt;/a&gt;. With this little gem (that&amp;#8217;s a pun!) developers can now (per user or system-wide) install specific versions of Ruby and have specific sets of those modules (Gems) I mentioned earlier - allowing them to do version locks and keep projects separate without needing to create complications when switching between projects (unless your that anomaly of a developer that only has one project). Actually my favorite part about rvm is that you don&amp;#8217;t actually &lt;strong&gt;need&lt;/strong&gt; to switch your Gemsets (that&amp;#8217;s what those groups of modules/versions of Ruby are called) manually between projects. You can simply have a file per project (one little file) that tells that projects which Gemset to use. How cool is that?!&lt;/p&gt;
+
+&lt;p&gt;Well I&amp;#8217;ll be honest, I don&amp;#8217;t have more than one Ruby project at a time, or one that requires different Gemsets, so I just like rvm for the ease of installation. This is an especially nice feature since I operate on more than one computer and more than one of those I cannot install packages via &lt;code&gt;sudo apt-get install ruby&#8230;&lt;/code&gt; (or &lt;code&gt;pacman -S ruby&lt;/code&gt; for you hipsters). So I went ahead and wrote a script that does that &amp;#8220;hard&amp;#8221; work for me. There&amp;#8217;s a little install &lt;a href=&quot;http://beginrescueend.com/rvm/install/&quot;&gt;tutorial&lt;/a&gt; and shortly thereafter I wanted to at least begin a script people could use to make that installation EVEN easier (wasn&amp;#8217;t sure it was possible). Really all it does is:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;make some simple checks&lt;/li&gt;
+&lt;li&gt;install rvm via git&lt;/li&gt;
+&lt;li&gt;add some source magic to your bash_profile&lt;/li&gt;
+&lt;li&gt;setup ruby 1.9.2 (latest at the moment)&lt;/li&gt;
+&lt;li&gt;setup a gemset called rails31&lt;/li&gt;
+&lt;li&gt;install rails 3.1.1 to that gemset&lt;/li&gt;
+&lt;li&gt;away you go!&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;div&gt;&lt;script src=&#8217;https://gist.github.com/1313611.js?file=&#8217;&gt;&lt;/script&gt;
+&lt;noscript&gt;&lt;pre&gt;&lt;code&gt;#!/bin/bash
+#
+# This script is for settingup a usable rvm environment for ruby development
+# Enables user to manage versions of ruby and sets of Gems in a clean manner
+#
+# Information on rvm is available at http://beginrescueend.com/
+
+git=&amp;quot;git&amp;quot;
+rvm=&amp;quot;rvm&amp;quot;
+rvmdir=&amp;quot;$HOME/.rvm&amp;quot;
+
+if [[ -d &amp;quot;${rvmdir}&amp;quot; ]]; then
+    read -p &amp;quot;WARNING: Removing any current ~/.rvm Okay? (y/n): &amp;quot;
+    [ &amp;quot;$REPLY&amp;quot; == &amp;quot;y&amp;quot; ] &amp;amp;&amp;amp; echo &amp;quot;Continuing&#8230;&amp;quot; || { echo &amp;quot;Okay, exitting then&#8230;&amp;quot;; exit 1; }
+    rm -rf ~/.rvm
+    echo &amp;quot;&amp;quot;
+fi
+
+command -v $git &amp;gt;/dev/null &amp;amp;&amp;amp; echo &amp;quot;$git found, good to go&amp;quot; || { echo &amp;quot;$git not found, required to continue. \n Please install $git&amp;quot;; exit 1; }
+
+bash &amp;lt; &amp;lt;(curl -s https://raw.github.com/wayneeseguin/rvm/master/binscripts/rvm-installer )
+
+# ATTENTION if your .bash_profile is not sourced by default on new bash session either change file or make sure its loaded
+echo &amp;quot;Adding rvm command to your bash_profile&amp;quot;
+type -P $rvm &amp;amp;&amp;gt;/dev/null &amp;amp;&amp;amp; echo &amp;quot;rvm already found in PATH moving on&#8230;&amp;quot; || { echo &#8216;[[ -s &amp;quot;$HOME/.rvm/scripts/rvm&amp;quot; ]] &amp;amp;&amp;amp; . &amp;quot;$HOME/.rvm/scripts/rvm&amp;quot; # Load RVM function&#8217; &amp;gt;&amp;gt; ~/.bashrc; echo &amp;quot;Added to your bashrc&amp;quot; }
+
+echo &amp;quot;&amp;quot;
+echo &amp;quot;Attempting to source our new command (rvm)&amp;quot;
+source $HOME/.rvm/scripts/rvm
+
+# Should output =&amp;gt; rvm is a function
+# If there is an issue here its likely there was an issue loading our command
+# otherwise check that ~/.rvm was successfully created
+# May want to follow this script by hand if having issues down here
+type -P $rvm &amp;amp;&amp;gt;/dev/null &amp;amp;&amp;amp; echo &amp;quot;New $rvm command found! Moving on&#8230;&amp;quot; || { echo &amp;quot;Can&#8217;t access $rvm command&amp;quot;; exit 1; }
+
+# TODO Want to check `rvm requirements` - will need to see if there is much in the way
+# of exit statuses for the command before attempting
+#rvm requirements #To ensure dependencies are met
+
+# Install a Ruby version
+echo &amp;quot;Attempting to install Ruby 1.9.2 and our default gem&#8230;&amp;quot;
+rvm install 1.9.2
+
+# Set as the version we&#8217;re using
+echo &amp;quot;&amp;quot;
+echo &amp;quot;Setting 1.9.2 as default&#8230;&amp;quot;
+rvm use 1.9.2 &#8211;default
+
+# Create a sandbox for Gems
+echo &amp;quot;&amp;quot;
+echo &amp;quot;Creating default gemset (rails31)&amp;quot;
+rvm gemset create rails31
+
+# Add our Ruby version to the gemset
+echo &amp;quot;&amp;quot;
+echo &amp;quot;Adding to a new default gemset (rails31)&amp;quot;
+rvm 1.9.2@rails31 &#8211;default
+
+# Install two important, common gems
+echo &amp;quot;&amp;quot;
+echo &amp;quot;Installing Rails 3.1.1 and Bundler to our gemset&amp;quot;
+gem install rails -v 3.1.1
+
+# Top it off
+echo &amp;quot;That should do it, now you can:&amp;quot;
+echo -e &amp;quot;\t* Download a project and run &#8216;bundle install&#8217; and start working with it&amp;quot;
+echo -e &amp;quot;\t* Run &#8216;rails new [appname]; cd [appname]; bundle install&#8217; and experiment&amp;quot;
+echo -e &amp;quot;\t* Checkout http://ruby.learncodethehardway.org/book/ if you need to learn Ruby first&amp;quot;
+echo &amp;quot;You&#8217;ll likely want to either run &#8216;source ~/.bashrc&#8217; now or exit your terminal and open it again&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/noscript&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Use at your own discretion, but really it shouldn&amp;#8217;t do anying harmful and if you&amp;#8217;re just looking to start experimenting, I encourage it!&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Developer Interview Lessons</title>
+    <link href="http://edk.github.com/blog/2011/09/12/lessons-from-a-job-opportunity/"/>
+    <updated>2011-09-12T11:18:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/09/12/lessons-from-a-job-opportunity</id>
+    <content type="html">&lt;p&gt;Finding jobs in any economic climate is stressful, but that doesn&amp;#8217;t mean you can&amp;#8217;t give it your all and go after whatever looks interesting. Sure, you&amp;#8217;ll likely get turned down a few times, but you might end up in an extremely fulfilling and interesting position. I&amp;#8217;ve recently been approaching such a situation. Let&amp;#8217;s start with some back story though.&lt;/p&gt;
+
+&lt;p&gt;To those of you who might know me I&amp;#8217;m a Senior Computer Science undergraduate at Saint John&amp;#8217;s University (Collegeville, not New York). However what most don&amp;#8217;t know is that I only need a two credit class next semester to graduate, which means I may not need to be a full-time student next semester. That&amp;#8217;s not to say I wouldn&amp;#8217;t love an easy last semester outside of the real world, but if I can find a job I find it hard to pay the gross amount of money it costs to go here full-time. Anyways, I&amp;#8217;m the type of person who really has a tough time doing things I don&amp;#8217;t love. I love some very nerdy things, but some things I can&amp;#8217;t put up with. This is why I&amp;#8217;ve started looking now, so I can try to feel out my options, or somehow have options at all.&lt;/p&gt;
+
+&lt;p&gt;Well in the past few weeks I actually have had such opportunities and I figured I&amp;#8217;d share with anyone looking to be in developer position my take-aways. Boy did I have a thing or two to learn about interviewing for developer positions. One thing to take note of is that depending on the actual industry the interviewing company is in. The Civil Engineering firm and Financial firm I&amp;#8217;ve done internships for had surprisingly business-like interviews:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Can you talk?&lt;/li&gt;
+&lt;li&gt;Are you personable?&lt;/li&gt;
+&lt;li&gt;Can you at least present yourself as if you know what you&amp;#8217;re talking about?&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Yea, it can be that simple. My theory for why this is is two-fold. First, a lot of smaller, non-computer-technical companies simply don&amp;#8217;t know how to hire for such a position. They don&amp;#8217;t know to get a code sample from you, how to view that sample, there are so many things they simply can&amp;#8217;t and won&amp;#8217;t do for that process. Second, if this is a huge corporate company they couldn&amp;#8217;t give a damn what you already know - they just want to know that you think logically enough to work things out so they can train you to do things their way. These are the places I can&amp;#8217;t handle, personally, because (in the little experience I have with them) I find extreme inconsistency and just poor practice throughout most projects I&amp;#8217;ve come across. I end up wanting to clean up their mess and yet, obviously, you can&amp;#8217;t because you&amp;#8217;ll break something and cause havoc.&lt;/p&gt;
+
+&lt;p&gt;Let&amp;#8217;s switch to the other extreme. I interviewed for a Silicon Valley tech company recently. Not a contracting developer house, a place that made their name on their application. This was my first real developer interview, which was actually probably my biggest mistake. I spoke over the phone with their HR rep a few times, then I was presented with a code challenge which, with no time contraints, I was to develop a little program that would basically attempt to spell check some common errors at O(n). Things to note up until this point:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;If they give no constraint on a project, do it fast&lt;/li&gt;
+&lt;li&gt;Document your code like never before&lt;/li&gt;
+&lt;li&gt;No repetition, use methods&lt;/li&gt;
+&lt;li&gt;Structure as well as you can&lt;/li&gt;
+&lt;li&gt;Use a language you really understand
+
+&lt;ul&gt;
+&lt;li&gt;Not only syntax but core benefits&lt;/li&gt;
+&lt;li&gt;Don&amp;#8217;t take 2 days to pick a language&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;To my surprise, I did well on this first part. After this I was told I would have a Skype call with a developer on their team, here comes the real stress. The guy called 10 to 15 minutes late from our original appointment and there was obviously some Thursday afternoon festivities taking place in the background. We did short introductions then opened up a collaborative, browser-based text editor and he said &amp;#8220;pick a language and write me a stack.&amp;#8221; Now I was told this would be a technical interview but I felt like I got hit by a car. Obviously any CS student should understand how to do this, but I was not expecting this for some reason. So I quickly wrote the most simplistic stack I&amp;#8217;ve ever seen in Java. We walked through different scenarios and as we talked I reworked the code. Finally he asked me how, if we have a stack of integers, I would most-quickly get the minimum. I froze - if you can&amp;#8217;t tell by now, I&amp;#8217;m not someone who can code when I know someone is watching. We eventually talked about the answer (duh, keep a second array for tracking minimums), I asked some questions about his work and we departed. I got an email the next day, from the HR rep, with a polite &amp;#8220;See ya next time.&amp;#8221; This was brutal, but I feel lucky to have learned some things from them:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Don&amp;#8217;t let the interviewer&amp;#8217;s attitude rattle you
+
+&lt;ul&gt;
+&lt;li&gt;It sucks, but you have to suck it up and deal&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Relax
+
+&lt;ul&gt;
+&lt;li&gt;Learn to code with others watching&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Review, in your head, basic concepts before such an interview
+
+&lt;ul&gt;
+&lt;li&gt;Companies seem to like to remind you that fundamentals are important&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Admit things you don&amp;#8217;t know&lt;/li&gt;
+&lt;li&gt;Ask questions, be interested, but don&amp;#8217;t be desperate&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Finally, we come to most recent attempt. I received an unexpected call from an online application for a more local developer contractor. I spoke with HR about setting up a time to come and interview with their hunter, we set up the for the earliest date I could get in. I entered the eerily casual offices in my shirt and tie to meet the people I feel at home with, nerds. I spoke with their extremely fun-to-talk-to hunter for awhile about my progression to becoming a developer - experience with teams, size of projects, etc.. I asked some questions about their business, what a day looks like for a dev until we had some time to tour the office. These tech company offices are very fun - stalked with food, caffeine, very open and friendly. We shook hands and he told me they&amp;#8217;d like to give me a code challenge. The next day I received a challenge involving setting up a web application that would connect to a SOAP server. They listed details such as what should be validated, rules for end users, etc.. Pretty straightforward - I even got to pick my favorite framework flavor! So I sketched a basic outline of the app and away we go. I had a week to present a clean project so sleep was mostly out the window with school/student job starting. I pounded something clean enough out and turned in a day early, because there was no way I&amp;#8217;d have any more time to work on it. I loved this project - this is the work I live for, but obviously I did some things wrong so let&amp;#8217;s have a look:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Be personable - even its a dev company people need to be able to communicate well&lt;/li&gt;
+&lt;li&gt;Don&amp;#8217;t forget your original knowledge around projects of this nature
+
+&lt;ul&gt;
+&lt;li&gt;Example: Web application means validate the heck out of text fields&lt;/li&gt;
+&lt;li&gt;Its tempting to blindly follow the specs and forget how to handle something like a web app&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Check that your server is able to perform all you require
+
+&lt;ul&gt;
+&lt;li&gt;I realized late on that my PHP5 install was not compiled with SOAP&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Do things that make sense
+
+&lt;ul&gt;
+&lt;li&gt;Example: if there&amp;#8217;s an HTML table being filled, sort it&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Re-read the specs before turning in
+
+&lt;ul&gt;
+&lt;li&gt;You may think you remember it all after reading it 1000 times, but you don&amp;#8217;t&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;So no, I didn&amp;#8217;t get this latest job, but I&amp;#8217;ll admit, I&amp;#8217;m no professional PHP developer. Their reviewer pointed out some gaping holes that I&amp;#8217;ll admit I could&amp;#8217;ve taken care of. Really part of the problem is my lack of experience which is why I don&amp;#8217;t see not getting a job as a failure. I learned a ton from the reviewer&amp;#8217;s notes on my application and I can use that to make myself a better developer. That&amp;#8217;s one big thing people need to take from such interviews - learn from them, don&amp;#8217;t get upset. Take what you can from an interview, get feedback, evolve yourself. Also note that a lot of developer houses prefer hiring people they know, people they see at conferences and open houses - make yourself a familiar face in the community of developers.&lt;/p&gt;
+
+&lt;p&gt;I hope this was as helful for you to read as it was for me to write!&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>A Prompt That Does the Job</title>
+    <link href="http://edk.github.com/blog/2011/08/30/a-prompt-that-does-the-job/"/>
+    <updated>2011-08-30T21:05:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/08/30/a-prompt-that-does-the-job</id>
+    <content type="html">&lt;p&gt;I was delighted enough to stumble across a great explanation on boosting your development environment some time ago and I&amp;#8217;ve continued to work away with forming it to my own tastes. As of late I have not been able to find this great guide I had used, but I implemented most of its changes which are lingering on my &lt;a href=&quot;https://github.com/jphenow/home_config/blob/master/.bashrc&quot;&gt;.bashrc&lt;/a&gt;, I suggest taking a gander.&lt;/p&gt;
+
+&lt;p&gt;Back to the real reason for the post though. One of my favorite features of my latest bashrc edits is the fact that I can see my curren&amp;#8217;t working branch in the prompt when I&amp;#8217;m under a working git directory. This was great and all it needs is a simple tool, that seems to come with most git installs, &lt;code&gt;__git_ps1&lt;/code&gt;. So with this I was able to edit my current &lt;code&gt;PS1&lt;/code&gt; setting to something like:&lt;/p&gt;
+
+&lt;figure class=&#8217;code&#8217;&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;/figcaption&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&#8217;line-number&#8217;&gt;1&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;&lt;code class=&#8217;bash&#8217;&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;nv&quot;&gt;PS1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[0;36m\]$(__git_ps1 &amp;quot;(%s)&amp;quot;)\[\033[01;34m\] \w \$\[\033[00m\] &amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;p&gt;But of course, the important part to note is the &lt;code&gt;$( __git_ps1 &quot;(%s)&quot; )&lt;/code&gt; which uses this simple little git tool to take care of our magic. This worked great for me for a long time, but alas times changed. I came upon a work computer that had no such tool (&lt;code&gt;__git_ps1&lt;/code&gt;). I was upset to see that upon every new prompt (between &lt;em&gt;every&lt;/em&gt; single command) I received a lovely error notifying me that &lt;strong&gt;SOMETHING DOESN&amp;#8217;T WORK&lt;/strong&gt;. So I spent some time attempting to remedy this.&lt;/p&gt;
+
+&lt;p&gt;Luckily I was able to set aside a little time to at least hide errors when we come across one such computer that for some silly reason doesn&amp;#8217;t have this little golden tool:&lt;/p&gt;
+
+&lt;figure class=&#8217;code&#8217;&gt;&lt;figcaption&gt;&lt;span&gt;&lt;/span&gt;&lt;/figcaption&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&#8217;line-number&#8217;&gt;1&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;2&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;3&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;4&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;5&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;6&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;7&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;8&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;9&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;10&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;11&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;12&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;13&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;&lt;code class=&#8217;bash&#8217;&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;nv&quot;&gt;PS1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[0;36m\]$(git_ps1 &amp;quot;(%s)&amp;quot;)\[\033[01;34m\] \w \$\[\033[00m\] &amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;git_ps1 &lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  __git_ps1 1&amp;gt;/dev/null 2&amp;gt;/dev/null &lt;span class=&quot;c&quot;&gt;# Grab exit status of an attempted run&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nv&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$?&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$err&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# If you can find tool&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;nv&quot;&gt;ps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; __git_ps1 &lt;span class=&quot;s2&quot;&gt;&amp;quot;(%s)&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -ne &lt;span class=&quot;s2&quot;&gt;&amp;quot;$ps&amp;quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Execute me some magic&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# :( no cool stuff for this run&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -ne &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Don&amp;#39;t show me errors&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;p&gt;So I just run it once hoping to find the exit status of attempting to run the tool then, based on that we can decide if we should use it on the prompt. Pretty simple!&lt;/p&gt;
+
+&lt;p&gt;Next on the free-time-y docket:
+* Clean the PS1 setting
+* Setup some simpler vars for colors
+* Throw reusables of all of the bashrc into some methods&lt;/p&gt;
+
+&lt;p&gt;Happy hacking!&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Fully Switched to Octopress</title>
+    <link href="http://edk.github.com/blog/2011/08/25/fully-switched-to-octopress/"/>
+    <updated>2011-08-25T12:18:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/08/25/fully-switched-to-octopress</id>
+    <content type="html">&lt;p&gt;I did it! I&amp;#8217;ve made the switch! Loving it so far. This framework is so much easier for someone who is used to ssh, git, and vim. I feel like I can dig into the guts more easily. Not that you couldn&amp;#8217;t dig into the Wordpress guts but it usually made me feeling like I was trying to work on Audi when all of my mechanic experience was with Ford. Wordpress, coming from an understanding of MVC patterns, feels poorly built (hacked together really).&lt;/p&gt;
+
+&lt;p&gt;Quickly, now, lets talk conversion. I switched from Wordpress and of course, being a CS major, I can&amp;#8217;t manually copy things to the new blog. That&amp;#8217;s silly to me. So what I did was make a quick little Ruby script!&lt;/p&gt;
+
+&lt;figure class=&#8217;code&#8217;&gt;&lt;figcaption&gt;&lt;span&gt; (wp_conv.rb)&lt;/span&gt; &lt;a href=&#8217;http://edk.github.com/downloads/code/wp_conv.rb&#8217;&gt;download&lt;/a&gt;&lt;/figcaption&gt;
+ &lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&#8217;line-number&#8217;&gt;1&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;2&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;3&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;4&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;5&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;6&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;7&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;8&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;9&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;10&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;11&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;12&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;13&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;14&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;15&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;16&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;17&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;18&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;19&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;20&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;21&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;22&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;23&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;24&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;25&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;26&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;27&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;28&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;29&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;30&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;31&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;&lt;code class=&#8217;rb&#8217;&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;mysql&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;./source/_posts/ruby/&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;n&quot;&gt;my&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Mysql&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;SERVER&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;USER&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;PASSWORD&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;DATABASE&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;my&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;select * from wp_posts&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;n&quot;&gt;stuff&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;# index 0 is ID&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;# index 1 is author ID &#8211; needs join from wp_users&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;# index 2 is date&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;# index 3 is date&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;# index 4 is post content&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;# index 5 seems to be title, should check why its repeated&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;n&quot;&gt;stuff&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;push&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;7&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;downcase&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;-&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;n&quot;&gt;fname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;%s%s-%s.markdown&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;title&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;n&quot;&gt;yaml&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;YAML&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;sh&quot;&gt;&#8212;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;sh&quot;&gt;layout: post&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;sh&quot;&gt;title: &amp;quot;#{row[5]}&amp;quot;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;sh&quot;&gt;date: #{date}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;sh&quot;&gt;comments: true&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;sh&quot;&gt;&#8212;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;no&quot;&gt;YAML&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;no&quot;&gt;File&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;w&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yaml&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;doc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;p&gt;This is a terribly simple and hacked up script that will pull in all of your Wordpress posts (Granted you change the parameters for the MySQL connection). All you have to do, upon changing those parameters, is run &lt;code&gt;ruby wp_conv.rb&lt;/code&gt; from the octopress directory. After that I would go through the &lt;code&gt;_posts&lt;/code&gt; and be sure everything popped out correctly. I noticed that there are two main things to do to fix this script up - I didn&amp;#8217;t add support for grabbing categories or tags and it will grab each revision of your Wordpress posts. So here&amp;#8217;s what I did after running this script:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Delete older revisions of posts that were downloaded&lt;/li&gt;
+&lt;li&gt;Add &lt;code&gt;categories&lt;/code&gt; to YAML at top of each post&lt;/li&gt;
+&lt;li&gt;There&amp;#8217;s an odd issue with UTF-8 conversion
+
+&lt;ul&gt;
+&lt;li&gt;My Vim highlighted the weird spaces, but I had to go through and delete odd-looking characters&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;If you don&amp;#8217;t tend to that UTF-8 issue running &lt;code&gt;rake generate&lt;/code&gt; will fail. I didn&amp;#8217;t experience this for all posts, but it definitely threw me off, so I apologize about that about the script, but I will see if there&amp;#8217;s a more sound way to handle that via the script.&lt;/p&gt;
+
+&lt;p&gt;DISCLAIMER: It&amp;#8217;s your own fault for running this script if something goes wrong, don&amp;#8217;t be upset with me, this was a hacked together script for some personal convenience and I figured I &amp;#8216;d share.&lt;/p&gt;
+
+&lt;p&gt;Happy hacking&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Next Generation Web Hosting?</title>
+    <link href="http://edk.github.com/blog/2011/08/17/next-generation-web-hosting/"/>
+    <updated>2011-08-17T10:38:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/08/17/next-generation-web-hosting</id>
+    <content type="html">&lt;p&gt;As I consider trying NoSQL and some other bleeding-edge tools I&amp;#8217;ve come to realize that very few people will let you host these new technologies in the traditional shared-hosting sense. I&amp;#8217;ve found some ways around these restrictions but I continue to keep my out for something out of the ordinary or new that I could try out.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.fluxflex.com/&quot;&gt;FluxFlex&lt;/a&gt; seems to fit this out-of-the-ordinary bill I had. This host, which is mind blowingly cheap at the moment, is pre-setup to allow simple publishing using &lt;a href=&quot;http://git-scm.com&quot;&gt;Git&lt;/a&gt;. For example, you have a local repository of your web application for some personal development. All you have to do is push to correct branch on github and &lt;em&gt;voila!&lt;/em&gt; it will be sync&amp;#8217;d on to the live site. It&amp;#8217;s &lt;em&gt;cool&lt;/em&gt; that that comes out of the box, but I can do that by myself right? Simple &lt;a href=&quot;http://www.kernel.org/pub/software/scm/git/docs/githooks.html&quot;&gt;Git hooking&lt;/a&gt; will accomplish pretty much the same thing on our own server setup.&lt;/p&gt;
+
+&lt;p&gt;The really cool part is that they allow you to host &lt;a href=&quot;http://www.mongodb.org/&quot;&gt;MongoDB &lt;/a&gt;(it seems that way, don&amp;#8217;t quote me on that), &lt;a href=&quot;http://nodejs.org/&quot;&gt;node.js&lt;/a&gt; applications, &lt;a href=&quot;http://rubyonrails.org/&quot;&gt;RoR&lt;/a&gt; applications - you can host almost anything. It&amp;#8217;s a big deal because things like node and Mongo don&amp;#8217;t jive well with a lot of standard shared hosts these days. Node is especially cool because its an entire process that runs persistently.&lt;/p&gt;
+
+&lt;p&gt;I should back up and remind people that there are some very cool, cheap (or better) node.js hosts out there, but I like this because it gives you so many options and at such a reasonable price.&lt;/p&gt;
+
+&lt;p&gt;~Phenow&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>First OctoPost!</title>
+    <link href="http://edk.github.com/blog/2011/08/16/first-octopost/"/>
+    <updated>2011-08-16T20:46:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/08/16/first-octopost</id>
+    <content type="html">&lt;p&gt;Not even an hour of &amp;#8216;work&amp;#8217; and I&amp;#8217;m already delighted to be working with &lt;a href=&quot;http://octopress.org/&quot;&gt;Octopress&lt;/a&gt;! I&amp;#8217;m in love with the automatic support for &lt;a href=&quot;http://daringfireball.net/projects/markdown/&quot;&gt;Markdown&lt;/a&gt;, the built in plugins for &lt;a href=&quot;http://disqus.com/&quot;&gt;Disqus&lt;/a&gt; and &lt;a href=&quot;http://twitter.com&quot;&gt;Twitter&lt;/a&gt;. Those are the just the front-facing sprinkles though!&lt;/p&gt;
+
+&lt;p&gt;Octopress seems wonderfully prepared to be auto-deployed using some simple &lt;a href=&quot;http://www.kernel.org/pub/software/scm/git/docs/githooks.html&quot;&gt;Git-Hooks&lt;/a&gt;. Currently I&amp;#8217;m just editting the live version of the site, &lt;em&gt;don&amp;#8217;t kill me&lt;/em&gt;, but once I get the site more settled to my tastes I will publish my setup for hooking git commits. I will likely base my git workflow of &lt;a href=&quot;http://joemaller.com/990/a-web-focused-git-workflow/&quot;&gt;this&lt;/a&gt; as it seemed simple enough for this blog - I&amp;#8217;d rather not over-complicate something that shouldn&amp;#8217;t be complex at all!&lt;/p&gt;
+
+&lt;p&gt;Lastly I was hoping to create a script for migrating old posts from WordPress to a set of posts that would work for Octpress. First I&amp;#8217;d do the basic grab and insert to files, then I will look into allowing options for having default share or comment properties. Will you guys let me know if you&amp;#8217;re interested? Or even if this already exists!&lt;/p&gt;
+
+&lt;p&gt;Well I already cut into some sleeping time to tinker with this, so I will continue my tinkering and tweaking another time. Check back for updates on migration scripts and hook scripts!&lt;/p&gt;
+
+&lt;p&gt;~Phenow&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Altering modes for public communications on this medium</title>
+    <link href="http://edk.github.com/blog/2011/08/08/altering-modes-for-public-communications-on-this-medium/"/>
+    <updated>2011-08-08T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/08/08/altering-modes-for-public-communications-on-this-medium</id>
+    <content type="html">&lt;p&gt;Translation: I&amp;#8217;m switching blogging frameworks in the coming weeks out of pure interest and to feed my adventurous nature.&lt;/p&gt;
+
+&lt;p&gt;For anyone that knows me personally I like to hop around projects, try new projects and really just explore the playing field. Not to toot my own horn, but I&amp;#8217;m actually really good at switching gears like that. So pretty soon you may see me using a blog framework called &lt;a href=&quot;http://octopress.org/&quot; title=&quot;Octopress&quot; target=&quot;_blank&quot;&gt;Octopress&lt;/a&gt;. Like I said, this is mostly out of interest in new things. Also, it uses Ruby and that happens to be the language I&amp;#8217;ll be familiarizing myself with for a new project! More on that later.&lt;/p&gt;
+
+&lt;p&gt;Do not fret! I have no bad blood for Wordpress (mostly), I&amp;#8217;m not moving because Wordpress is getting terrible or anything. There are plenty of things that are good/bad about Wordpress IMHO, but one could say that about a lot of blogging web applications. For now you&amp;#8217;ll see the old site laying around and eventually you may see some new stuff popping up - I&amp;#8217;ll be prepping it on another domain or subdomain for now to keep interruption to my current site at minimum.&lt;/p&gt;
+
+&lt;p&gt;Another short note: it seems like I say this a lot, but I should be more and more available as my Summer internship wraps up. There should be an interesting article surfacing on that soon too.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Octopress 2.0 Surfaces</title>
+    <link href="http://edk.github.com/blog/2011/07/23/octopress-20-surfaces/"/>
+    <updated>2011-07-23T18:05:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/07/23/octopress-20-surfaces</id>
+    <content type="html">&lt;p&gt;Octopress is a framework designed by &lt;a href=&quot;http://brandonmathis.com&quot;&gt;Brandon Mathis&lt;/a&gt; for &lt;a href=&quot;http://github.com/mojombo/jekyll&quot;&gt;Jekyll&lt;/a&gt;, the blog aware static site generator powering &lt;a href=&quot;http://pages.github.com&quot;&gt;Github Pages&lt;/a&gt;.
+To start blogging with Jekyll, you have to write your own HTML templates, CSS, Javascripts and set up your configuration. But with Octopress
+All of that is already taken care of. Simply &lt;a href=&quot;https://github.com/imathis/octopress&quot;&gt;clone or fork Octopress&lt;/a&gt;, install dependencies and the theme, and you&amp;#8217;re set.&lt;/p&gt;
+
+&lt;h2&gt;What&amp;#8217;s new in 2.0?&lt;/h2&gt;
+
+&lt;p&gt;Short answer: Everything. Octopress is now based on &lt;a href=&quot;http://github.com/mojombo/jekyll&quot;&gt;mojombo/jekyll&lt;/a&gt; has been completely rewritten from the ground up with a mountain of goodies.&lt;/p&gt;
+
+&lt;p&gt;Octopress comes with:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;A semantic HTML5 template&lt;/li&gt;
+&lt;li&gt;A Mobile friendly responsive (&lt;a href=&quot;http://stuffandnonsense.co.uk/projects/320andup/&quot;&gt;320 and up&lt;/a&gt;) layout (rotate, or resize your browser and see)&lt;/li&gt;
+&lt;li&gt;Built in 3rd party support for Twitter, Google Plus One, Disqus Comments, Pinboard, Delicious, and Google Analytics&lt;/li&gt;
+&lt;li&gt;An easy deployment strategy using Github pages or Rsync&lt;/li&gt;
+&lt;li&gt;Built in support for POW and Rack servers&lt;/li&gt;
+&lt;li&gt;Easy theming with Compass and Sass&lt;/li&gt;
+&lt;li&gt;A Beautiful &lt;a href=&quot;http://ethanschoonover.com/solarized&quot;&gt;Solarized&lt;/a&gt; syntax highlighting&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Be sure to check out the &lt;a href=&quot;http://edk.github.com/docs&quot;&gt;documentation&lt;/a&gt; to get the full scoop.&lt;/p&gt;
+
+&lt;h3&gt;Plugins FTW&lt;/h3&gt;
+
+&lt;p&gt;Most of these plugins have been created just for Octopress, but a few come from the Jekyll community along with improvements and updates.&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/video-tag&quot;&gt;HTML5 Video Tag&lt;/a&gt; - &lt;em&gt;easily post mp4 HTML5 video with flash player fallback&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/codeblock&quot;&gt;Code Block&lt;/a&gt; - &lt;em&gt;for easy inline code sharing&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/include-code&quot;&gt;Include Code&lt;/a&gt; - &lt;em&gt;embed code from your filesystem&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/gist-tag&quot;&gt;Gist Tag&lt;/a&gt; - &lt;em&gt;automatically downloads and embeds Github gists&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/image-tag&quot;&gt;Image Tag&lt;/a&gt; - &lt;em&gt;easily post images with class names and titles&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/render-partial&quot;&gt;Render Partial&lt;/a&gt; - &lt;em&gt;insert any file into another post or page&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/blockquote&quot;&gt;Blockquote&lt;/a&gt; - &lt;em&gt;generate beautiful, semantic block quotes&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/pullquote&quot;&gt;Pullquote&lt;/a&gt; - &lt;em&gt;generate CSS only pull quotes &amp;mdash; no duplicate data, no javascript&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://edk.github.com/docs/plugins/category-generator&quot;&gt;Category Generator&lt;/a&gt; - &lt;em&gt;generates archive pages for each blog category&lt;/em&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;For more plugins check out the &lt;a href=&quot;http://edk.github.com/docs/plugins&quot;&gt;plugin list&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2&gt;Ready to Get Started?&lt;/h2&gt;
+
+&lt;p&gt;Octopress is really easy to set up and deploy, &lt;a href=&quot;http://edk.github.com/docs/setup&quot;&gt;start here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;For now that&amp;#8217;s it. Check out the &lt;a href=&quot;http://edk.github.com/docs&quot;&gt;docs&lt;/a&gt;, &lt;a href=&quot;http://github.com/imathis/octopress&quot;&gt;kick the tires&lt;/a&gt;, post &lt;a href=&quot;http://github.com/imathis/octopress/issues&quot;&gt;issues&lt;/a&gt; send me &lt;a href=&quot;http://convore.com/octopress/support&quot;&gt;support requests&lt;/a&gt; and tell all your friends.&lt;/p&gt;
+
+&lt;p&gt;Oh, and if you like, follow &lt;a href=&quot;http://twitter.com/octopress&quot;&gt;@octopress&lt;/a&gt; and &lt;a href=&quot;http://twitter.com/imathis&quot;&gt;@imathis&lt;/a&gt; on Twitter.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Wordpress Plugin development</title>
+    <link href="http://edk.github.com/blog/2011/05/29/wordpress-plugin-development/"/>
+    <updated>2011-05-29T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/05/29/wordpress-plugin-development</id>
+    <content type="html">&lt;p&gt;Well I&amp;#8217;ve decided to keep the site like this now. I found a way to make this style doable and it seems silly to continually seek out the most minimalist style when I could just use what I have and do something useful with time. Speaking of being useful with my time; I&amp;#8217;ve been working on a Wordpress plugin that makes it easy to display some article properties in a nice way. When working with a friend of mine to create a blogging site in which we introduce a number of Open Source programs and tutorial them for our readers. After writing a few articles we realized something: not everyone writes at the same level; that is, some of us expect more from our readers. We also noticed that some of our applications weren&amp;#8217;t totally cross platform. This sparked an idea for a Wordpress plugin. To simplify telling our readers, easily, what platforms and how difficult an article or tutorial will be.&lt;/p&gt;
+
+&lt;p&gt;First, I read the introduction &lt;a title=&quot;Writing a plugin&quot; href=&quot;http://codex.wordpress.org/Writing_a_Plugin&quot; target=&quot;_blank&quot;&gt;Codex page&lt;/a&gt; for plugin development. This directed me across several of the Wordpress documentation pages so that I could find a basic understanding for how to approach my plugin. This was my first real plugin for something so I was very interested to see how the general idea is handled. Since its a plugin and you want someone to be able Install and Activate and start using, with no further customization. To a certain extent this seems limiting from a developer perspective because you cannot intervene anywhere else in your code to get your plugin to work, because if you had to do that then anyone else installing and using your plugin would have to get their hands dirty to get the plugin to work.&lt;/p&gt;
+
+&lt;p&gt;So Wordpress handles plugins by allowing developers to &amp;#8220;hook&amp;#8221; functions to standard Wordpress functions. For instance, when someone loads a Wordpress page there is a function called &amp;#8220;the_content&amp;#8221; that is run, which calls to the database and gets all of the content for that post/page. Without going into details about header information I must have this in php file:&lt;/p&gt;
+
+&lt;figure class=&#8217;code&#8217;&gt; &lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&#8217;line-number&#8217;&gt;1&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;2&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;3&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;4&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;5&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;&lt;code class=&#8217;javascript&#8217;&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;plugin_content&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$str&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;$str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Hello plugin&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;nx&quot;&gt;add_action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;the_content&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;plugin_content&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;p&gt;Quick notice: we gain access to the post content by using a parameter, Wordpress doesn&amp;#8217;t make it too obvious that you have access to such parameters, but as far as I can tell, you have access to what the attachable function&amp;#8217;s return. That is, here we have access to what the_content() would return. You want to be sure to return the one parameter you accept. &lt;a title=&quot;Actions&quot; href=&quot;http://codex.wordpress.org/Plugin_API#Actions&quot; target=&quot;_blank&quot;&gt;Some explanation&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;This simple plugin will add &amp;#8220;Hello plugin&amp;#8221; at the beginning of each post content on loading each page. It will not alter the database information, but will only add the content on loading of each post. Part of the beauty of plugins is that we don&amp;#8217;t have to screw up a user&amp;#8217;s database in the process. One thing you may realize is that this is only part of what we need in a plugin like I want to achieve. I want something where each post has its own properties, that stick with that post. So we need to also handle usage of meta boxes on the post. Here there are a few options: let the user utilize meta boxes without guidance (dangerous, may render plugin near useless), fill in meta boxes using a little html magic, or fill in inivisble meta boxes. The last option is ideal because this stops the user from accidentally changing something, which could break the plugin or at least the reading of one of their posts. To add and save meta boxes we need something like:&lt;/p&gt;
+
+&lt;figure class=&#8217;code&#8217;&gt; &lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&#8217;line-number&#8217;&gt;1&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;2&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;3&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;4&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;5&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;6&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;7&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;8&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;9&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;10&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;11&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;12&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;13&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;14&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;15&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;16&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;17&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;18&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;19&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;20&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;21&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;22&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;23&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;24&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;25&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;26&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;27&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;28&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;29&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;30&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;31&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;32&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;33&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;34&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;35&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;36&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;37&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;38&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;39&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;40&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;41&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;42&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;43&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;44&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;45&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;46&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;47&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;48&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;49&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;50&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;51&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;52&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;53&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;54&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;55&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;56&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;57&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;58&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;59&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;60&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;61&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;62&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;63&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;64&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;65&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;66&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;67&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;68&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;69&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;70&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;71&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;72&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;73&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;74&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;75&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;76&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;77&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;78&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;79&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;80&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;81&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;82&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;83&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;84&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;85&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;86&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;87&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;88&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;89&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;90&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;&lt;code class=&#8217;javascript&#8217;&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;/**&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;* Setup meta box spot in edit post action&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;metabox&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;c1&quot;&gt;// Post meta box&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;add_meta_box&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// this is HTML id of the box on edit screen&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;s1&quot;&gt;&amp;#39;difficulty&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// title of the box&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;s1&quot;&gt;&amp;#39;Platforms &amp;amp;amp; Difficulty Plugin&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// function to be called to display the checkboxes, see the function below&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;s1&quot;&gt;&amp;#39;meta_box_content&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// on which edit screen the box should appear&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;s1&quot;&gt;&amp;#39;post&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// part of page where the box should appear&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;s1&quot;&gt;&amp;#39;side&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// priority of the box&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;s1&quot;&gt;&amp;#39;default&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;c1&quot;&gt;// at the add_meta_boxes hook run our function and create the meta box&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;nx&quot;&gt;add_action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;add_meta_boxes&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;metabox&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;/**&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;* Fill in the meta box with check boxes and radio buttons&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;meta_box_content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Needed if you want to access global post information.&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// nonce field for security check, you can have the same&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// nonce field for all your meta boxes of same plugin&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;wp_nonce_field&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;plugin_basename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__FILE__&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;nonce&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// make more unique - assures security between post&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// Adds the invisible meta field for necessary data&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// &amp;quot;_&amp;quot; prefix makes field invisible for user editing&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;add_post_meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Post that is receiving the values&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;s1&quot;&gt;&amp;#39;_some_val&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Meta variable name&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;s2&quot;&gt;&amp;quot;some info&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Value being entered into the variable &amp;#39;_some_val&amp;#39;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Make unique, so don&amp;#39;t allow multiple copies to be created&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Since we make sure the variable is only&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// allowed to be created if unique, I run this&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// at the beginning of edit action to be sure&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// the variable exists before I start working with the post&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;$val&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;get_post_meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;_some_val&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Gets the value for&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// &amp;quot;_some_val,&amp;quot; which would be &amp;quot;some info&amp;quot; if we just created, but&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// could be some unique info if the user has interacted with the plugin on this post before.&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// Getting post meta information here so that I can fill in our html so that it&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// looks like the post &amp;quot;remembered&amp;quot; its meta information.&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// Insert some html and use get_post_meta variables to fill it in so it looks the way they saved it&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// we don&amp;#39;t need to add_action because its referred as the meta box function in our above&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;c1&quot;&gt;// function - its registered as the function that actually fills it in&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;/**&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;* Save our meta box data into invisble meta fields&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;cm&quot;&gt;*/&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;kd&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;save_meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;nx&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// check if this isn&amp;#39;t an auto save&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;defined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;DOING_AUTOSAVE&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;amp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;amp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;DOING_AUTOSAVE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;wp_verify_nonce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;nonce&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;plugin_basename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;__FILE__&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// be sure the _POST[&amp;#39;nonce&amp;#39;] matches your nonce from above - must be the&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// same to work, but should be unique from other things&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;c1&quot;&gt;// called after a post or page is saved and not on autosave&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$parent_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;wp_is_post_revision&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;          &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$parent_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;c1&quot;&gt;// now store data in custom fields based on checkboxes/radios selected&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;nx&quot;&gt;$val&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$_POST&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;_some_val&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;c1&quot;&gt;// grabs the current data from the html we used in the above function&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;      &lt;span class=&quot;nx&quot;&gt;update_post_meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$post_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;_some_val&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nx&quot;&gt;$val&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;c1&quot;&gt;// updates information with what grabbed from the post submit&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;&lt;span class=&quot;nx&quot;&gt;add_action&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;  &lt;span class=&quot;s1&quot;&gt;&amp;#39;save_post&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;save_meta&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;p&gt;Now with the above set of functions we just need to utilize our meta variables to insert something into the post, as I showed earlier in this post. If you&amp;#8217;d like to see my project where I put all of this information together go to &lt;a href=&quot;https://github.com/jphenow/WP-Difficulty-and-Platform/blob/master/difficulty.php&quot; target=&quot;_blank&quot;&gt;my github&lt;/a&gt;. As development proceeds I will be adding a global settings page where users can change everything about the plugin. Currently my plugin allows them to pick associated platforms so I&amp;#8217;d like to allow them to change the icons and even what they&amp;#8217;re including on each page. For instance instead of the plugin specifying platform or difficulty they can specify what general people or topics are being discussed on a post.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Mid-Transition</title>
+    <link href="http://edk.github.com/blog/2011/05/27/mid-transition/"/>
+    <updated>2011-05-27T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/05/27/mid-transition</id>
+    <content type="html">&lt;p&gt;Working on transitioning the blog! Hoping to work on a a better way of  doing this so I might do some crazy magic here pretty soon. I’d like to  move to a NoSQL method, but my current host isn’t a fan of allowing me  to run what I’d prefer at a reasonable price! Lots to do if this goes  through so, I know…. I’m not a &lt;em&gt;huge&lt;/em&gt; fan of the current look, but we’ll see what I can work in to make this look decent before I hope to move.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Linux Home config files are up on Github!</title>
+    <link href="http://edk.github.com/blog/2011/05/04/linux-home-config-files-are-up-on-github/"/>
+    <updated>2011-05-04T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/05/04/linux-home-config-files-are-up-on-github</id>
+    <content type="html">&lt;p&gt;I love this because there&amp;#8217;s about 7 or 8 different Linux boxes I end up on at any given time. Between work, class, home, parent&amp;#8217;s house, etc. I became pretty frustrated with trying to keep all my configs similar enough to keep me sane and productive. So now I just pop into my git directory pull down any updates and away I go! If I make any edits I just push back upstream and I&amp;#8217;ll get any updates on my other computers as I pull updates.&lt;/p&gt;
+
+&lt;p&gt;If anyone wants to check out the repo its up &lt;a title=&quot;Home_config&quot; href=&quot;https://github.com/jphenow/home_config&quot;&gt;here&lt;/a&gt;. Don&amp;#8217;t expect too much fancy stuff. A lot of it is stuff I&amp;#8217;ve taken from my brother or friends, which means it might not be the cleanest thing to look at, but it works well for me. I&amp;#8217;ve also included a little shell script that might prove useful to anyone who decides they might actually want to do this type of thing with their own configuration files. &amp;#8216;populate_home.sh,&amp;#8217; as I&amp;#8217;ve called it, will do a few important things:&lt;/p&gt;
+
+&lt;ol&gt;
+    &lt;li&gt;Make a backup directory inside your home directory&lt;/li&gt;
+    &lt;li&gt;Any names of files within your working git directory that match files in your home directory will be moved into the backup directory&lt;/li&gt;
+    &lt;li&gt;All of the files within your git working directory will be soft linked (&amp;#8216;ln -s&amp;#8217;) to your home directory&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;This script made things a lot easier for me. The backup gives you some piece of mind so you won&amp;#8217;t lose everything if something goes amiss (unlikely). The linking is the real magic, though. It makes pulling and pushing updates much easier, and makes it so you only have to run &amp;#8216;populate_home.sh&amp;#8217; unless you add any new config files to your git working directory.&lt;/p&gt;
+
+&lt;p&gt;So for anyone that has some pretty specific &amp;#8216;.bashrc&amp;#8217; specifications or a  lot of &amp;#8216;.vimrc&amp;#8217; customizations this is something you should see. Even if you don&amp;#8217;t switch between computers a lot, revision control of my config files has been a life saver for keeping track of any weird issues I&amp;#8217;ve run into. Also having these types of things on github means that its another thing you don&amp;#8217;t have to worry about losing ever. Now whenever I end up with a new Linux box in front of me I just pull down my repo and everything is in the place I&amp;#8217;m used to, allowing me to get back to an attempt at productivity.&lt;/p&gt;
+
+&lt;p&gt;For anyone that&amp;#8217;s come across my post about a Firefox hack - we&amp;#8217;ve been crossing our fingers that a Fedora upgrade and an NFS upgrade will solve our problems but I&amp;#8217;ll try to post the work we&amp;#8217;ve gotten so far so that it can be at least tried out or tinkered with.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Moving a Wordpress install from GoDaddy to Dreamhost</title>
+    <link href="http://edk.github.com/blog/2011/03/28/moving-a-wordpress-install-from-godaddy-to-dreamhost/"/>
+    <updated>2011-03-28T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/03/28/moving-a-wordpress-install-from-godaddy-to-dreamhost</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;d say this took some good amounts of research but, it wasn&amp;#8217;t too hard. I figured an article that explained the whole thing might be nice to have laying around for someone someday.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;strong&gt; I take no responsibility if this screws with your Wordpress stuff or if things don&amp;#8217;t work the way you expect. You follow the instructions on your own risk&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;That said I performed this migration about a week ago so they should be relatively accurate. Just be careful and be prepared to mess around with settings and what not on your own in case my description isn&amp;#8217;t exactly what you need for your specific migration.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;#8217;s what I started out with at the beginning of my endeavor to move &lt;em&gt;back&lt;/em&gt; to Dreamhost:&lt;/p&gt;
+
+&lt;ul&gt;
+    &lt;li&gt; An account with GoDaddy that included hosting &lt;em&gt;and&lt;/em&gt; domain registration&lt;/li&gt;
+    &lt;li&gt;An installed and working version of Wordpress&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Now we&amp;#8217;ll start out with the preparation of moving Wordpress.&lt;/p&gt;
+
+&lt;ol&gt;
+    &lt;li&gt;&lt;strong&gt;Sign in&lt;/strong&gt; to your &lt;strong&gt;GoDaddy account&lt;/strong&gt; and &lt;strong&gt;proceed&lt;/strong&gt; to&lt;strong&gt; &amp;#8220;My Account&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Click&lt;/strong&gt; on &lt;strong&gt;&amp;#8220;Hosting Plans&amp;#8221;&lt;/strong&gt; under &amp;#8220;My Products&amp;#8221;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select&lt;/strong&gt; the &lt;strong&gt;account&lt;/strong&gt; you&amp;#8217;re &lt;strong&gt;moving Wordpress from&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;In the top right corner of the pop-up&lt;strong&gt; select &amp;#8220;Control Center&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Click &lt;/strong&gt;on the &lt;strong&gt;&amp;#8220;Database&amp;#8221;&lt;/strong&gt; area (towards the bottom of the accordion)&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select MySQL&lt;/strong&gt; option - We&amp;#8217;re now going to get the MySQL database back-up (Don&amp;#8217;t worry you shouldn&amp;#8217;t actually have anything downloaded yet)
+&lt;ol&gt;
+    &lt;li&gt;For the &lt;strong&gt;database&lt;/strong&gt; that is&lt;strong&gt; matched&lt;/strong&gt; up&lt;strong&gt; with your Wordpress install &lt;/strong&gt;(Should have a description similar to your Wordpress title name)&lt;strong&gt; click&lt;/strong&gt; the &lt;strong&gt;little pencil&lt;/strong&gt; on the far right of the table&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Click&lt;/strong&gt; on &lt;strong&gt;&amp;#8220;Password&amp;#8221;&lt;/strong&gt; and &lt;strong&gt;set it&lt;/strong&gt; to something you can &lt;strong&gt;remember&lt;/strong&gt; for 5 minutes ;)&lt;strong&gt; write it down &lt;/strong&gt;if not&lt;strong&gt; **&lt;/strong&gt;Must have one capital letter and one letter&lt;strong&gt;**&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;Then look at the lower section labeled &lt;strong&gt;&amp;#8220;MySQL Database Information&amp;#8221;&lt;/strong&gt; and &lt;strong&gt;copy the Username&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;Finally &lt;strong&gt;click&lt;/strong&gt; on&lt;strong&gt; &amp;#8220;Open Manager&amp;#8221;&lt;/strong&gt; in the top right&lt;/li&gt;
+    &lt;li&gt;Now use the &lt;strong&gt;Username&lt;/strong&gt; and&lt;strong&gt; password&lt;/strong&gt; we just got from the past few steps (6.2 &amp;amp; 6.3)&lt;/li&gt;
+    &lt;li&gt;Alright now you can &lt;strong&gt;select &amp;#8216;Export&amp;#8217;&lt;/strong&gt;
+&lt;ol&gt;
+    &lt;li&gt;Here, just &lt;strong&gt;select &lt;/strong&gt;the&lt;strong&gt; database name&lt;/strong&gt; (under &amp;#8220;Export&amp;#8221;) that we signed in under (&lt;strong&gt;not &amp;#8216;information_schema&lt;/strong&gt;&amp;#8217;). The database you export will probably contain lots of fields with the prefix &amp;#8221;&lt;strong&gt;wp_&lt;/strong&gt;&amp;#8221;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Click&lt;/strong&gt; the &lt;strong&gt;&amp;#8220;MySQL&amp;#8221;&lt;/strong&gt; radio button to be sure it &lt;strong&gt;exports as a MySQL document&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Check&lt;/strong&gt; the box to &lt;strong&gt;&amp;#8216;Save as file&amp;#8217;&lt;/strong&gt; and I personally &lt;strong&gt;cleared&lt;/strong&gt; the box for &amp;#8216;File name template&amp;#8217; and &lt;strong&gt;set&lt;/strong&gt; compression zipped&lt;/li&gt;
+    &lt;li&gt;Now &lt;strong&gt;save &lt;/strong&gt;this &lt;strong&gt;file &lt;/strong&gt;in a &lt;strong&gt;folder &lt;/strong&gt;let&amp;#8217;s call it&lt;strong&gt; &amp;#8220;wordpress_migration&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+    &lt;li&gt;Now &lt;strong&gt;open&lt;/strong&gt; up an&lt;strong&gt; ftp client&lt;/strong&gt; or &lt;strong&gt;ssh&lt;/strong&gt; if you&amp;#8217;re like me and hate ftp&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Go &lt;/strong&gt;to the folder where Wordpress is installed and go to &lt;strong&gt;&amp;#8220;wp-content/themes&amp;#8221;&lt;/strong&gt; and &lt;strong&gt;copy&lt;/strong&gt; out any or all themes (copy their &lt;strong&gt;entire folders&lt;/strong&gt;) you intend to use in the new Wordpress install&lt;/li&gt;
+    &lt;li&gt;Also inside &amp;#8220;wp-content&amp;#8221; be sure to &lt;strong&gt;copy&lt;/strong&gt; &lt;strong&gt;folders&lt;/strong&gt; for any of the &lt;strong&gt;plugins&lt;/strong&gt; you use
+&lt;ol&gt;
+    &lt;li&gt;I would recommend &lt;strong&gt;placing&lt;/strong&gt; these copied folders into the &lt;strong&gt;wordpress_migration&lt;/strong&gt; &lt;strong&gt;folder&lt;/strong&gt; we talked about creating&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+    &lt;li&gt;Return to &amp;#8220;My Account&amp;#8221; on GoDaddy.com and &lt;strong&gt;select your domain registration product&lt;/strong&gt; - this will launch the domain manager
+&lt;ol&gt;
+    &lt;li&gt;Around this point I&amp;#8217;ll say you should make &lt;strong&gt;SURE &lt;/strong&gt; you have everything off that site&amp;#8217;s ftp that you want to keep&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select &amp;#8220;Nameservers&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select &amp;#8220;I have specific nameservers&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Under Nameserver1 copy NS1.DREAMHOST.COM&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;&lt;strong&gt;Under Nameserver2 copy NS2.DREAMHOST.COM&lt;/strong&gt;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;&lt;strong&gt;&lt;strong&gt;Under Nameserver3 copy NS3.DREAMHOST.COM&lt;/strong&gt;&lt;/strong&gt;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Back to &amp;#8220;My account&amp;#8221;&lt;/strong&gt; under GoDaddy.com&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select&lt;/strong&gt; &lt;strong&gt;&amp;#8220;Manage my domains&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Check&lt;/strong&gt; your Wordpress &lt;strong&gt;website&lt;/strong&gt; and &lt;strong&gt;click &amp;#8220;Locking&amp;#8221; &lt;/strong&gt;towards the top&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Uncheck&lt;/strong&gt; &lt;strong&gt;&amp;#8220;Lock domains&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;Along the row your domain is &lt;strong&gt;Click &lt;/strong&gt;the little icon of &lt;strong&gt;people&lt;/strong&gt; (I&amp;#8217;m not sure what it looks like) and make sure you &lt;strong&gt;turn off&lt;/strong&gt; private registration&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Click&lt;/strong&gt; on the little yellow&lt;strong&gt; &amp;#8220;D&amp;#8221; &lt;/strong&gt;then &lt;strong&gt;slecect &amp;#8220;Contacts&amp;#8221;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Copy &lt;/strong&gt;down the &lt;strong&gt;administrator contact&lt;/strong&gt; or change them all to ones you know&lt;/li&gt;
+    &lt;li&gt;On the page we reached in (10.11) &lt;strong&gt;select&lt;/strong&gt; &lt;strong&gt;&amp;#8220;Send by email&amp;#8221; &lt;/strong&gt;under &amp;#8220;Authorization code&amp;#8221; which is listed under &amp;#8220;Expiration date&amp;#8221;
+&lt;ol&gt;
+    &lt;li&gt;Leave this email in your inbox as you&amp;#8217;ll need it to transfer to DreamHost&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Sign up&lt;/strong&gt; at &lt;strong&gt;Dreamhost.com&lt;/strong&gt; with the plan you see fit. You get a lot with every plan - even the cheapest&lt;/li&gt;
+    &lt;li&gt;I &lt;strong&gt;selected&lt;/strong&gt; to &lt;strong&gt;transfer&lt;/strong&gt; the domain for free with my sign up for an account - use the authorization code we got in step 10.13
+&lt;ol&gt;
+    &lt;li&gt;You should start getting emails from both GoDaddy and Dreamhost in the next several hours to a few days on the transfer - I know things like should be instant I agree, I&amp;#8217;m very impatient when it comes to running web servers and what not. Just &lt;strong&gt;wait a day or two&lt;/strong&gt; before you start freaking out. If it&amp;#8217;s &lt;strong&gt;getting worrisome&lt;/strong&gt; start up a &lt;strong&gt;live-chat with Dreamhost&lt;/strong&gt; associate. Those chats usually fix my problems if we did miss something.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+    &lt;li&gt;Luckily Dreamhost is pretty quick about letting you access your hosting stuff so you can at least start migration
+&lt;ol&gt;
+    &lt;li&gt;&lt;strong&gt;If &lt;/strong&gt;you&amp;#8217;d like to put &lt;strong&gt;Wordpress on a subdomain &lt;/strong&gt;- I generally prefer that - &lt;strong&gt;go to domain management&lt;/strong&gt; in &lt;strong&gt;Dreamhost&lt;/strong&gt; and &lt;strong&gt;add&lt;/strong&gt; a &lt;strong&gt;subdomain&lt;/strong&gt; by naming it &lt;em&gt;subdomain.yoursite&lt;/em&gt;.com&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select&lt;/strong&gt; &lt;strong&gt;MySQL&lt;/strong&gt; &lt;strong&gt;Databases &lt;/strong&gt;along the left panel and &lt;strong&gt;create&lt;/strong&gt; a database named&lt;em&gt; something of your choice&lt;/em&gt; (I don&amp;#8217;t specify a name because Dreamhost has a large server for MySQL, which means you can&amp;#8217;t name it something obvious like WordPress or temp). I named mine &lt;em&gt;domainname_blogname&lt;/em&gt;. The rest of the options are just for creating a domain for where to access your databases - I&amp;#8217;ll &lt;strong&gt;refer to&lt;/strong&gt; the site as &lt;strong&gt;mysql.yoursite.com&lt;/strong&gt; (&lt;strong&gt;remember &lt;/strong&gt;your &lt;strong&gt;credentials&lt;/strong&gt; for logging in)
+&lt;ol&gt;
+    &lt;li&gt;&lt;strong&gt;Open a new tab &lt;/strong&gt;and&lt;strong&gt; migrate &lt;/strong&gt;to &lt;strong&gt;mysql.yoursite.com&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Log in &lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Unzip &lt;/strong&gt;that file we exported from the &lt;strong&gt;old MySQL&lt;/strong&gt; database&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Open &lt;/strong&gt;the resulting &lt;strong&gt;file&lt;/strong&gt; in a &lt;strong&gt;text editor&lt;/strong&gt; that has &lt;strong&gt;find all/replace&lt;/strong&gt; function (&lt;strong&gt;NOT  WORD&lt;/strong&gt;)&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Find all information_schema &lt;/strong&gt;and &lt;strong&gt;replace &lt;/strong&gt;with&lt;strong&gt; temp&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Save as&lt;/strong&gt; a different file than what we opened in case there&amp;#8217;s an accidental probelm&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Return &lt;/strong&gt;to  &lt;strong&gt;PHPMyAdmin &lt;/strong&gt;(Probably mysql.yoursite.com)&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select&lt;/strong&gt; &lt;strong&gt;import&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Select &lt;/strong&gt;the file we &lt;strong&gt;just saved&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;Should be successful - if not send me an email or leave a comment
+&lt;ol&gt;
+    &lt;li&gt;Some of this last stuff is being &lt;strong&gt;remembered &lt;/strong&gt;so I&amp;#8217;ll help with this last stuff if its not working well&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Go to &amp;#8220;One Click installs&amp;#8221;&lt;/strong&gt; and &lt;strong&gt;install Wordpress &lt;/strong&gt; on your domain/subdomain of choice &lt;strong&gt;**DO NOT open the site on a browser yet**&lt;/strong&gt;
+&lt;ol&gt;
+    &lt;li&gt;&lt;strong&gt;Using FTP &lt;/strong&gt;or &lt;strong&gt;ssh&lt;/strong&gt; log into your hosted site (&lt;strong&gt;setup ssh/ftp&lt;/strong&gt; users under&lt;strong&gt; &amp;#8220;Users&amp;#8221;&amp;gt;&amp;#8221;Manage Users&amp;#8221;&lt;/strong&gt;); (&lt;strong&gt;If &lt;/strong&gt;you&lt;strong&gt; can&amp;#8217;t login &lt;/strong&gt;using&lt;strong&gt; your site URL &lt;/strong&gt;yet because its still transfering &lt;strong&gt;click &amp;#8220;Account Status&amp;#8221; &lt;/strong&gt;in the top right corner and &lt;strong&gt;copy&lt;/strong&gt; the &lt;strong&gt;&amp;#8220;Web Server&amp;#8221; &lt;/strong&gt;then your server is &lt;em&gt;servername.&lt;/em&gt;dreamhost.com)&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Edit&lt;/strong&gt; &lt;strong&gt;wp-config.php &lt;/strong&gt;
+&lt;ol&gt;
+    &lt;li&gt;&lt;strong&gt;Set DB_NAME &lt;/strong&gt;to the &lt;strong&gt;name&lt;/strong&gt; its listed &lt;strong&gt;under&lt;/strong&gt; &lt;strong&gt;&amp;#8220;PHPMyAdmin&amp;#8221;&lt;/strong&gt; AKA &lt;strong&gt;&amp;#8220;Dreamhost&amp;#8217;s MySQL Manger&amp;#8221; - &lt;/strong&gt;probably 3 letters and a bunch of numbers&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Set DB_USER&lt;/strong&gt; to the &lt;strong&gt;user&lt;/strong&gt; you set&lt;strong&gt; &lt;/strong&gt;when you setup the databases at step 13.2&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Set DB_PASSWORD &lt;/strong&gt;to the &lt;strong&gt;password &lt;/strong&gt;also setup in step 13.2&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Set DB_HOST&lt;/strong&gt; to the &lt;strong&gt;URL&lt;/strong&gt; set in step 13.2 - something like mysql.&lt;em&gt;yoursite.&lt;/em&gt;com&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Set $table_prefix&lt;/strong&gt; to &amp;#8217;&lt;strong&gt;wp_&amp;#8217;&lt;/strong&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;Save&lt;/strong&gt; the file in the same spot you found it&lt;/li&gt;
+    &lt;li&gt;Now &lt;strong&gt;copy&lt;/strong&gt; all of those &lt;strong&gt;plugins&lt;/strong&gt; and &lt;strong&gt;themes&lt;/strong&gt; in their corresponding spots &amp;#8220;wp-content/themes&amp;#8221; &amp;amp; &amp;#8220;wp-content/plugins&amp;#8221;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+
+
+&lt;p&gt;If things aren&amp;#8217;t working for you tinker with where you think the problem is and let me know what I maybe listed on here incorrectly. This should be all you have to do though. Be prepared to play around with fixing stuff though - doesn&amp;#8217;t always work quite perfectly. The toughest and most error-prone part will be the database migration.&lt;/p&gt;
+
+&lt;p&gt;I hope this helps for any of you trying to escape the horrid wrath that is GoDaddy. Perhaps more tutorials to come as I try to set up a good spot for my git repositories.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>A recent venture.</title>
+    <link href="http://edk.github.com/blog/2011/03/14/a-recent-venture/"/>
+    <updated>2011-03-14T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/03/14/a-recent-venture</id>
+    <content type="html">&lt;p&gt;A month or two back a friend of mine came to me to show me a prototype web application he wrote for a project. The project was actually to create a prototype front end for a &amp;#8220;Way-finding&amp;#8221; system for an old folks home near his school. He showed me what he built, which was actually quite impressive and professional looking, but I was sad to see this direction system had not started to be built at all. I sat back realizing we had &lt;em&gt;just&lt;/em&gt; recently learned about &lt;a href=&quot;http://en.wikipedia.org/wiki/Dijkstra%27s_algorithm&quot;&gt;Dijkstra&amp;#8217;s algorithm&lt;/a&gt;. That was all fine and dandy that we learned how to, using graphs, find the fastest way from point A to B, but I was really interested in finding out how that would apply to maps, which would require more information in a database and so forth. Yes I know what you&amp;#8217;re thinking &amp;#8220;why not just use Google Maps API.&amp;#8221; Well, yes I thought of that too, but this company wanted someone design their own map system because it was for navigating their business&amp;#8217;s campus rather than navigating a street. This just got more interesting, because we&amp;#8217;d really have a product to sell if we created a web application in which people can design their own Google Maps-esque page with their own set of maps for whatever they&amp;#8217;d like to use it on.&lt;/p&gt;
+
+&lt;p&gt;With all of my running projects, school and an actual job the whole thing slipped my mind and I thought that was the end of it. A few weeks later, though, I received a call from the very same friend because that company called him saying they were so impressed they were thinking of drawing up a contract with him instead of a company that was hoping for nearly 5 times more than a college student would bid on this contract. This was great news since he asked me to build much of the back-end ( sooo I&amp;#8217;m building the whole thing? ), sadly the project really was worth at least twice as much as we bid on it, but it could still be a great opportunity. Then he told me they wanted it 3 months after the contract was settled on&amp;#8230; I was very close to driving over and throwing something at him, but I tried to calmly express that a 3 month ground-up project was possible suicide. Convinced, he put his bid down with 4 months (still short, but okay whatever). Thus I began freaking out because if we did get the contract then even with 4 months it would be a full load of homework, a 20 hour per week Linux admin job plus this project and a girlfriend. I&amp;#8217;m screwed.&lt;/p&gt;
+
+&lt;p&gt;Pressed for time every day I began researching what tools I&amp;#8217;d like to use. After some deliberation ( I would&amp;#8217;ve spent more time on it but I was getting worried about this thing we call &amp;#8216;time&amp;#8217; ) I decided to use &lt;a href=&quot;http://cakephp.org/&quot;&gt;CakePHP&lt;/a&gt; for my back-end framework. I mostly decided on Cake because of the quick/easy experience I had when running a few personal tests and tinkering - plop in their source, start naming tables, fields, controllers, etc. correctly then everything starts working like an object&amp;#8230; yay quick development! Excited to have found a quick framework I started thinking about revision control, because I don&amp;#8217;t trust myself enough to not use revision control. Easily landed on &lt;a href=&quot;http://git-scm.com/&quot;&gt;git&lt;/a&gt; because I&amp;#8217;ve familiarized myself with it over the year or two I&amp;#8217;ve used it and I know what I&amp;#8217;m doing for the most part. Quickly realized that I will actually want a workflow and some collaboration with my friend so I set up 3 subdomains for development, testing, and near-production. The testing domain would actually serve as the main holder for the workflow and dev would hold the really sketchy, maybe-gonna-work stuff. Within the testing domain I had a few different branches, because like I said, it would be the main holder for the application below production level. It contained a master (newest development seemingly stable stuff), a next (newest of new, might work), a test branch (beta-y, prepping for release) and finally a maintenance branch (flash bach to old tags and patch). One of the last things on my pre-development list was to set up a bug tracker for tracking new idea ventures, bugs (seriously, I know) and just keeping track of the project as a whole. I rarely like bug trackers, but &lt;a href=&quot;http://www.redmine.org/&quot;&gt;Redmine&lt;/a&gt; is quite nice in my opinion, keeps track of commits, will &amp;#8220;fix&amp;#8221; bugs in the track if you comment on your commits correctly, just a clean tool to use overall. Finally I&amp;#8217;m actually getting excited because things are starting to look like a real development project and my buddy calls to tell me that the company we were working with went with a product that will provide support.&lt;/p&gt;
+
+&lt;p&gt;Ouch.&lt;/p&gt;
+
+&lt;p&gt;Now I&amp;#8217;m in the mixed feelings stage. I went from being worried as hell to being damn excited about the project. Now that its gone from my grasp (as if I had it ever?) I&amp;#8217;m happy that I won&amp;#8217;t lose hours of sleep, fail some class I hardly need or miss an hourly paying job I enjoy, but that excitement left me just as fast as it came. My current thoughts lie with whether or not continue and just make it a general product I could sell. Its all ready to be developed and now I might actually have some time to sit on the thing and do it right, but now that there isn&amp;#8217;t a deadline its hard to make myself as excited as I was. Ya know? More on this decision as it becomes clear to me.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>3 minute Firefox startup time with NFS and NIS, isn&#8217;t that okay? </title>
+    <link href="http://edk.github.com/blog/2011/03/14/3-minute-firefox-startup-time-with-nfs-and-nis-isnt-that-okay/"/>
+    <updated>2011-03-14T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2011/03/14/3-minute-firefox-startup-time-with-nfs-and-nis-isnt-that-okay</id>
+    <content type="html">&lt;p&gt;I&amp;#8217;ll be honest (cool) as a Linux Admin ( assistant but it sounds cooler if I drop the &amp;#8216;assistant&amp;#8217; ) we get a lot of weird complaints and I have a theory as to why . We have people who are new to Linux (Fedora 13 for now) and think they need to revert to being new to using computers simply because its Linux, we also have the other user type where everyone who&amp;#8217;s cd&amp;#8217;d around their home directory thinks they should tell &lt;em&gt;you&lt;/em&gt;, the Linux guy, why gdm won&amp;#8217;t start, finally we have the people who actually &lt;em&gt;do &lt;/em&gt;know what they&amp;#8217;re doing (1 or 2 people out of several hundred Linux users IMO ) and its scary because they try to sneak through small little holes in security so they can use their machine the way they think its correct. So basically what I&amp;#8217;m trying to say is that sometimes we need to ( my boss and I ) ponder on what issues to actually explore and which ones to just make fun of ( we don&amp;#8217;t have much man power so we really do have to evaluate pretty well what to put at the top of the work stack, we aren&amp;#8217;t that heartless ).&lt;/p&gt;
+
+&lt;p&gt;After about the 50th email we received about how Firefox takes &lt;em&gt;literally&lt;/em&gt; over a minute to start up we decided to drop some of our security projects for a bit and actually take a look. It takes approximately .2 seconds for Google to tell you that NIS, NFS, and Firefox &lt;em&gt;really&lt;/em&gt; don&amp;#8217;t play well together, as well as OpenOffice which is another complaint we&amp;#8217;ve received. The only &amp;#8220;solution&amp;#8221; we&amp;#8217;ve found people say could help was to upgrade all of the NFS server, which isn&amp;#8217;t really an option right now since we work at a school and upgrading in the middle of a semester is suicidal, but we also didn&amp;#8217;t want to wait until the end of the semester until people actually started yelling about the Firefox issue. We started looking more into the problem and found that it may have to do with the heavy sqlite use in the profile which would be transfered over NFS since its in the home directory&amp;#8217;s profile. We tried ls-ing the profile early, to load some of the info into memory cache, cp-ing and deleting out of /tmp, finally we decided there was no real &amp;#8220;quick&amp;#8221; way of doing this.&lt;/p&gt;
+
+&lt;p&gt;We landed on something we&amp;#8217;ve deemed to be a hack&amp;#8230; because its really not that clean of a solution by any standard. First I wrote a script to patch the current user&amp;#8217;s firefox profile on boot that will edit the profiles.ini to direct the profile directory to a local space on the current lab computer ( they can switch lab computers all they want ), then a &amp;#8220;lock&amp;#8221; is touched when we start rsync-ing the profile to a local directory which is a sticky directory with permissions preserved, once the rsync is complete the lock is removed and a following script utilizes inotify to watch the local directory for changes and will rsync accordingly to the home directory as the Firefox session is running. Finally on logout we plan to have a script that will clean the directory of all Firefox user profiles, in case someone  wasn&amp;#8217;t logged out correctly so we don&amp;#8217;t have lingering profiles.&lt;/p&gt;
+
+&lt;p&gt;Okay we don&amp;#8217;t actually know yet if this clears up our issue, but its the only way we can decide that will actually help the process at all of starting Firefox. I&amp;#8217;ll report back if this helps the situation much and try to host the code somewhere publicly available ( if I&amp;#8217;m given permission ) so that anyone in a similar position can use our fancy ( ha ) method for speeding up the Firefox start over NFS.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Why you should have a separate home partition</title>
+    <link href="http://edk.github.com/blog/2010/12/20/why-you-should-have-a-separate-home-partition/"/>
+    <updated>2010-12-20T00:00:00-08:00</updated>
+    <id>http://edk.github.com/blog/2010/12/20/why-you-should-have-a-separate-home-partition</id>
+    <content type="html">&lt;p&gt;I started tinkering around with Ubuntu when I was about 15 or 16 because, my brother came back from school and talked about how cool it was up at college. I started installing, breaking, and fixing. Eventually he started telling me things I should do, but I hardly ever understood why I should do them, I just did them because I was told I should. You should always understand why someone is telling you to do something, because you&amp;#8217;ll more than likely learn something that way.&lt;/p&gt;
+
+&lt;p&gt;To explain why a separate home partition is a great idea I&amp;#8217;ll just explain a few the experiences I&amp;#8217;ve had. Every once in a while I go a little too crazy and install way too many things on my Linux box. Sadly on Linux after a while you&amp;#8217;ve done so much with configuration and dependency installation that your OS is pretty screwy. A good way to clean up crap like that is to do a fresh install of Linux, but if you have /home on the same partition as root then you&amp;#8217;re going to lose personal settings, files, etc., unless you spend a lot of time backing it all up so you can put it back in its spot. With a separate partition you can wipe the root file system, reinstall Linux and designate the home partition to mount at /home - quick and easy. From there just install all your favorite packages or create a script to do that each time you do a fresh install.&lt;/p&gt;
+
+&lt;p&gt;A more recent extreme case is what brought this post about. I returned from a visit to Iowa and found my Linux partition unbootable. I didn&amp;#8217;t quite panic, but I was having trouble accessing the drive at all. I finally decided to pop in a live GParted CD and wipe my root filesystem then reinstall Ubuntu 10.10. Within an hour I was back to where I left the computer before this weekend. Up to date, all my programs running, Chrome even opened up the windows I hadn&amp;#8217;t closed before the weekend.&lt;/p&gt;
+
+&lt;p&gt;Save yourself the pain of a dumb accident and put in the extra work to separate your main linux filesystem partition and your home directory.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Ready-break: Here we come mainland</title>
+    <link href="http://edk.github.com/blog/2010/12/20/ready-break-here-we-come-mainland/"/>
+    <updated>2010-12-20T00:00:00-08:00</updated>
+    <id>http://edk.github.com/blog/2010/12/20/ready-break-here-we-come-mainland</id>
+    <content type="html">&lt;p&gt;Our Study Abroad program was nice enough to not only take us across seas to Ireland, but also give us a week off to ourselves to check out Europe all by ourselves. Bobby Mandel and myself decided to get together and be travel buddies for this one, because we seem to have similar tastes, travel styles, and get along pretty well. Just before I wrote the last post (early October) we decided to look into where we could go for cheap that looks appetizing and nice to our wallets. We landed on a few different cities: Venice, Brussels (briefly), and Amsterdam. It was settled, we bought some Ryan air tickets, train tickets, and an Aer Lingus ticket and proceeded to seek out some accommodations for sleeping in each city. The date rolled along and we set sail on our journey.&lt;/p&gt;
+
+&lt;p&gt;We walked around Dublin for a night waiting for our plane, slept in a 7 Euro hostel, almost had our bags stolen while we slept (truly) and woke up by 3:30am to await our early flight to Venice. Several cups of coffee later our sketchy Ryan air flight took off and landed in Venice, where neither of us spoke the language, nor knew how to actually get onto the &amp;#8220;island&amp;#8221; of Venice. We followed some promising signs and were herded onto a bus that may or may not get us there. We did however dismount the bus to find a delightfully old, car-less floating (sort of) city with more canals than one can imagine. We found out the hostel we booked was across the larger canal so we decided to spend the day on the main part of Venice with our bags and just check out the city as much as possible before checking in. We saw as much as possible: San Marco, Da Vinci exhibits, naval exhibits, and just wandered and found little nooks and crannies of the city. We went to find our hostel and food before getting a good rest before another day of wandering. Today we wanted to see only a few more things (small city) and by about 12pm we decided we saw a lot of the things we liked on the map&amp;#8230; so we proceeded to eat as much pizza and drink as much wine as we could for the remainder of the day. We ate and drank then walked around to find more random things, rinse and repeat. We had another early flight out to Brussels so we hit the hay by about 10pm.&lt;/p&gt;
+
+&lt;p&gt;We landed in Brussels airport and found the area quite pretty because it was in the middle of no where surrounded by almost nothing. We again took a bus into the City and quickly realized that all of Brussels was gray and gross. We promptly walked into the train station to get food and wait for a way into Amsterdam.&lt;/p&gt;
+
+&lt;p&gt;Arriving in Amsterdam from Brussels is like walking into a palace after spending years living in a box. The town is clean, gorgeously covered in red-brick buildings, extremely clean canals and some extremely delightful people. Our hostel was very friendly, we found a bar and hang out area in the basement and our room was towards the top of the thin building. Bobby and I forgot that we took the cheapest available bed which landed us in a full-size bed for both of us. We decided to cuddle instead of pay the extra 10 Euro a piece for our own beds. It was okay though because the Canadian sisters below us just made fun of us the entire time. Those same Canadian sisters actually became some good friends of ours. Us four split the making of a good soup and salad with some wine. They wanted to walk around town to see it at night and finally had some boys to take them (they thought it unsafe with just two girls). We walked around town, took some goofy pictures then headed back to the hostel. The morning after we all hung out we were parting ways so we made sure we could all find each other on Facebook and we went our separate paths.&lt;/p&gt;
+
+&lt;p&gt;We found, upon returning to the Park Lodge, that it had become our home. We plopped down on our beds and unpacked and felt like the traveling had ended, which in a way it had, but we realized that those cottages had become somewhere we wanted to return to, it was an odd feeling to realize this.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Northern Ireland</title>
+    <link href="http://edk.github.com/blog/2010/12/20/northern-ireland/"/>
+    <updated>2010-12-20T00:00:00-08:00</updated>
+    <id>http://edk.github.com/blog/2010/12/20/northern-ireland</id>
+    <content type="html">&lt;p&gt;Northern Ireland is a different world, in my opinion, compared to the rest of Ireland. Northern Ireland, as some of you may know, is still part of the UK. There is constant argument, or more, between the Protestants (UK Unionists) and the Catholics (Irish). Without delving too far into the heart of Irish politics; the Catholics don&amp;#8217;t see themselves as British and the Protestants don&amp;#8217;t see themselves as part of Ireland at all.&lt;/p&gt;
+
+&lt;p&gt;We started our 4 night trip out in Derry (Londonderry for you Unionists). We had an entire hostel for two nights to just Johnnies and Bennies which made for some interesting nights. In Derry we visited the site where &lt;a href=&quot;http://en.wikipedia.org/wiki/Bloody_Sunday_(1920)&quot;&gt;Bloody Sunday&lt;/a&gt; took place which was quite a moving experience. We explored the medieval town, had dinner at some of the rustic pubs in the area and took one of the best tours I&amp;#8217;ve ever taken. Our walking tour guide was an older gentleman who was apparently an ex-taxi driver that everyone in the not-so-small city knew. He shared with us some of the very meaningful stories that centered around the murals one could see when walking down the Bloody Sunday Street. There were murals about the men involved directly with that Sunday, about men who went on hunger strike at different times, and some that were just about the life long search for peace. One mural could bring tears to even the hardest of people. One mural was painted to model picture of a girl standing in front of all the chaos looking rather lost. She died in the crossfire of the troubles that went on Derry in the late 20th Century. We&amp;#8217;ve all heard of that kind of sad story but, this one is special, because this girl&amp;#8217;s dad never accepted her death so everyday from the day she died until his death he would sit across the street from the mural and talk to it as if she were sitting right in front of him. In respect of this man&amp;#8217;s loss no tour companies would allow tour groups to walk that far up the street, no one thought the tour was worth putting the man on display, and now they tell his story to keep the memories alive. Obviously this isn&amp;#8217;t the entirety of our travels through Derry, but this sticks out most to me.&lt;/p&gt;
+
+&lt;p&gt;Belfast was a different experience all together. Its a much more industrial town than anything we&amp;#8217;ve seen before in Ireland. Going down certain streets you can still see Union Jack colors and designs painted in areas where you don&amp;#8217;t want to trot around telling people how Catholic you are. We stayed in an air-tight hostel who seemed relatively concerned about who came into the hostel doors. We found out later from our Belfast-born professor that they acted that way because he (a Catholic) still refuses to drive down the road we were on because there were many &amp;#8216;Unionist&amp;#8217; activists known for parading around that street causing havoc. He was quite surprised we stayed there, luckily we didn&amp;#8217;t know how bad it was until we told him where we were. Our tour of Belfast was yet another new experience. Many of us, throughout or learnings in History class, have come to have something of dislike for British, or at least we can tell when someone is being biased. Some of us picked up that our tour guide was extremely Unionist as she bashed all that the Nationalists stood for. We did learn, though, as we went down the &amp;#8216;peace&amp;#8217; wall and up and down the Falls and Shankhill roads. It was amazing to see how a modern community can still be so literally separated.&lt;/p&gt;
+
+&lt;p&gt;As I said after writing about Derry, there&amp;#8217;s probably more to be said about our travels - the Bushmills brewery, the count of pints we drank, the fun people we met who play dance with old Irish music, but it seemed more appropriate to talk about the things someone might not expect to find in each area of Ireland.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Dublin</title>
+    <link href="http://edk.github.com/blog/2010/12/20/dublin/"/>
+    <updated>2010-12-20T00:00:00-08:00</updated>
+    <id>http://edk.github.com/blog/2010/12/20/dublin</id>
+    <content type="html">&lt;p&gt;By the time we begin to set sail for Dublin many of us are realizing how much time we &lt;em&gt;don&amp;#8217;t&lt;/em&gt; have left in Ireland and at the Park Lodge with our Irish Friends. Everyone is looking to enjoy things to the fullest again. In Dublin some of us have a great time connecting our latest History learning to the monuments and buildings across the city. We went into the General Post Office that was shot up in the early 20th Century, saw a replica famine ship, and many other things.&lt;/p&gt;
+
+&lt;p&gt;Our first night there we were set loose to find our own food then had to be dressed up for a showing of Ibsen&amp;#8217;s &amp;#8220;John Gabriel Borkman&amp;#8221; at the Abbey theater. This was an experience to say the least. The set was absolutely gorgeous, and the acting was wonderful. John Borkman was played by Alan Rickman who expertly commanded everyone&amp;#8217;s attention.&lt;/p&gt;
+
+&lt;p&gt;As I said, everyone in the group was trying to live to the fullest in this trip so we spent each night seeking live music and full pints. We succeeded each night in remembering how we fell in love with the country of Ireland.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>A grand time was had by all</title>
+    <link href="http://edk.github.com/blog/2010/12/20/a-grand-time-was-had-by-all/"/>
+    <updated>2010-12-20T00:00:00-08:00</updated>
+    <id>http://edk.github.com/blog/2010/12/20/a-grand-time-was-had-by-all</id>
+    <content type="html">&lt;p&gt;Time is slipping away from us as we can see the end near.&lt;/p&gt;
+
+&lt;p&gt;The Ireland group spent an afternoon down by the soccer fields playing some intense wet-ground football. We had a fantastic Thanksgiving meal and night in the pub with those at Park Lodge who make this all possible. We even had our bus driver and one of our professors join us for dinner, a talent show of the students, and some pints at the pub.&lt;/p&gt;
+
+&lt;p&gt;The weekend before our last week many of us spend the entire time in Galway at pubs, shopping, walking, and just remembering. We had some great nights hanging out with each other and sharing stories from what seems like so long ago and yet not long ago at all.&lt;/p&gt;
+
+&lt;p&gt;Everyone spent time preparing for final exams and essays.&lt;/p&gt;
+
+&lt;p&gt;In Theology we talked about Christmas tradition for some time then we sat around in the pub singing familiar Christmas carols to each other - we&amp;#8217;ll miss you Mary Clancy. She never talked long enough about one thing for us to learn anything, the class structure was not there, and we still don&amp;#8217;t know what you were trying to teach us, but you were the sweetest Irishwoman we know and we won&amp;#8217;t forget your kindness and love for Johnnies and Bennies.&lt;/p&gt;
+
+&lt;p&gt;Our final day in History was spent praying we could pass the large exam. Laurence Marley, the man who knows it all about all things historical or otherwise. The man with a plan and a story for everything. Easily one of the most impressive professors I&amp;#8217;ve ever had the pleasure to learn from.&lt;/p&gt;
+
+&lt;p&gt;Gerard O&amp;#8217;Brien, the Irish James Bond of Literature. The suavest, and coolest man you&amp;#8217;ve ever hoped to share a brandy with. Another class we&amp;#8217;re not sure what we learned about, but we loved to hear you reminisce about Irish poetry and non-sensical writings of Joyce or some other great classic writer.&lt;/p&gt;
+
+&lt;p&gt;Our directors Elizabeth Stoltz and Dave All-that-is-man Hutcheson taught us that you don&amp;#8217;t have to know what&amp;#8217;s going on or how much money you have to run a study abroad program. They were like grandparents to us all and though we all may have different problems with them, they were some of the most caring and generous people we could have had the pleasure to be our directors. Elizabeth Stoltz&amp;#8217;s Guiness cake and Dave Hutcheson&amp;#8217;s run will always be memories I hold close to my heart.&lt;/p&gt;
+
+&lt;p&gt;Finally JP, the man who can &amp;#8220;fix&amp;#8221; anything as long as it involves liquor or a pint. We&amp;#8217;ll miss the man who took care of us through many nights and had a watchful eye like a good uncle and close friend.&lt;/p&gt;
+
+&lt;p&gt;Our final night we had a large bonfire on the rocks, thanks to Evan Howard who decided to rebuild a 10-year-old pit built by Johnnies of old. Whiskey, beer, and stories were shared with some attempts at singing. We proceeded to a final night in High Hughes&amp;#8217; in Spiddal, one last drunchie stop at Super Mac&amp;#8217;s and back to the Park Lodge. We were allowed by JP to crash the last Irish wedding before people started to head home. We danced, we drank, we picked Nate up off the floor.&lt;/p&gt;
+
+&lt;p&gt;I didn&amp;#8217;t sleep that night as I packed showered and remembered the first day I walked into the cottage. Its hard to believe it ended, but life goes on and there will be more memories to be had throughout life. I&amp;#8217;ll miss the nights we had and look forward to meeting up with life long friends made throughout the time I had in Ireland.&lt;/p&gt;
+
+&lt;p&gt;Indeed, a grand time was had by all.&lt;/p&gt;
+
+&lt;p&gt;Cottage 5 (and 6 I spose) for life. Many a reunion will be had.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
+    <title>Southern Ireland</title>
+    <link href="http://edk.github.com/blog/2010/10/01/southern-ireland/"/>
+    <updated>2010-10-01T00:00:00-07:00</updated>
+    <id>http://edk.github.com/blog/2010/10/01/southern-ireland</id>
+    <content type="html">&lt;p&gt;September 15th: wake up, finish packing, hit the road by 10am. We stuffed in our new home for the next four days, a stuffy Lally&amp;#8217;s Tour bus, and drove for an hour or so to stop at W. B. Yeats&amp;#8217; old Cottage/Tower. We met Gerard O&amp;#8217;Brien, our literature professor, at the Cottage/Tower; he told us some more about the old structure and read a poem and we headed to Coole Park. Coole Park is where the famous Lady Gregory lived for years. Here we checked out the lake, grounds, and autograph tree. We moved on and quickly came to the realization that it was 3pm and none of us have eaten so we found refuge at a SuperMac&amp;#8217;s (the McDonald&amp;#8217;s Equivalent of Ireland) and continued our trek to Cork. Once in Cork we toured the beautiful city and it&amp;#8217;s university. Finally we got to our first hostel of the trip, which was again more packed and stuffy so many of us simply dropped our stuff off and went to find a pub and/or some food. In this town we found a pub called &amp;#8220;The Franciscan Well,&amp;#8221; which turned out to be a great microbrewery for us to hang out in that night. This pub also had us stumble upon 3 fellow Minnesotans! One guy recognized a Twins hat someone had on and we talked to them for some time, but, oddly, the conversation was coming to a close shortly after we found out two of them had close relatives on the Tommie football team. &amp;#8220;Enough of this company,&amp;#8221; I said. I didn&amp;#8217;t actually say that but, their relatives are on the Tommie team, one of them a current stud on the team.&lt;/p&gt;
+
+&lt;p&gt;We moved on in the morning to Blarney Castle and did, indeed, kiss the Blarney stone. So yes I am much more eloquent at this point, can you tell? Later, we stopped on the side of the road to have a look at the Michael Collins Memorial, where he was assassinated, and one of our directors gave us the full story. To this day, you can see many passers-by making the sign of the cross as they continue driving. We traveled a little further to stop at Muckross Castle and have a look around. We finally stopped in Killarney and dropped our stuff in a new hostel and went to find groceries that we could cook in the community kitchen of the hostel. Off we go again into town, since its someone&amp;#8217;s birthday, and we found a few great pubs to hang out in. Met a man from Wisconsin this time, who was probably 7 feet tall.&lt;/p&gt;
+
+&lt;p&gt;This next day we spent at Muckross house and driving for several hours around the Ring of Kerry, which is just a pretty peninsula with lots of cliffs and great views of the ocean. We saw the island that is the closest European point to the US. That was mostly a long day in a bus, but we eventually returned to our same hostel as the previous night and had a more relaxed night in the pubs; we actually found an old fashioned Irish storyteller, who was the most vulgar person I&amp;#8217;ve ever met in my life.&lt;/p&gt;
+
+&lt;p&gt;This day was much easier. We had a short drive to Tralee where we checked out the Kerry County Museum then drove through the Dingle Peninsula for a few hours, which was similar to the sights seen in the Ring of Kerry. We landed again in Tralee and, again, dropped our stuff and went searching for groceries to cook in the community kitchen. Found a few more pubs and had a quiet night.&lt;/p&gt;
+
+&lt;p&gt;The final day had arrived of our exhausting trip and we were all ready for a break. We hopped on the bus and went to the Cliffs of Moher for a few hours. We ate, looked at the exhibit and walked around the &amp;#8220;regular&amp;#8221; parts of the cliffs, which were all covered with big stone fences, stopping you from getting with 20ft of the edge. Well if you went all the way to the left end of the fences there was an interesting sight; first there was a memorial for &amp;#8220;those lost at the cliffs&amp;#8221;, then there was a &amp;#8220;DANGER DO NOT GO BEYOND THIS POINT&amp;#8221; sign, next there was sign saying how windy and dangerous the cliffs were, finally you could see all the people who disregarded all of these signs and warnings of death. Well we, being the smart deliberators we all are, followed suit and walked past these signs to get the real views of the cliffs. We took some silly pictures of us pretending to fall and be more scared than we were, in reality and we quickly scurried back to safety. I encourage you to look at &lt;a href=&quot;http://picasaweb.google.com/j.phenow/Galway10#&quot;&gt;http://picasaweb.google.com/j.phenow/Galway10#&lt;/a&gt; so you can see the fun pictures. There are probably some other good ones taken by others on Facebook. We ended our day with a stop in Galway for some weekly groceries and rest.&lt;/p&gt;
+
+&lt;p&gt;An interesting few days, indeed. Hope all is well with everyone at home, see you guys in a few months! Its coming up fast!&lt;/p&gt;
+</content>
+  </entry>
+  
+</feed>
