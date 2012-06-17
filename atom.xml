@@ -4,7 +4,7 @@
   <title>edk blogs</title>
   <link href="http://edk.github.com/atom.xml" rel="self"/>
   <link href="http://edk.github.com/"/>
-  <updated>2012-06-17T10:24:46-07:00</updated>
+  <updated>2012-06-17T10:54:12-07:00</updated>
   <id>http://edk.github.com/</id>
   <author>
     <name>EDK</name>
@@ -13,11 +13,36 @@
 
   
   <entry>
+    <title>configuring octoblog to not ask for github username and password</title>
+    <link href="http://edk.github.com/blog/2012/06/17/configuring-octoblog-to-not-ask-for-github-username-and-password/"/>
+    <updated>2012-06-17T10:47:00-07:00</updated>
+    <id>http://edk.github.com/blog/2012/06/17/configuring-octoblog-to-not-ask-for-github-username-and-password</id>
+    <content type="html">&lt;p&gt;After some fumbling around with OctoBlog and github pages, I soon got into the flow with &amp;#8216;rake generate &amp;amp;&amp;amp; rake deploy&amp;#8217;&lt;/p&gt;
+
+&lt;p&gt;The first annoyance I ran into was having to enter my github username and pasword on every deploy.&lt;/p&gt;
+
+&lt;p&gt;To confirm to myself that this really works, and anyone who happens to run into the same problem, here&amp;#8217;s what I did:&lt;/p&gt;
+
+&lt;figure class=&#8217;code&#8217;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre class=&quot;line-numbers&quot;&gt;&lt;span class=&#8217;line-number&#8217;&gt;1&lt;/span&gt;
+&lt;span class=&#8217;line-number&#8217;&gt;2&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#8217;code&#8217;&gt;&lt;pre&gt;&lt;code class=&#8221;&gt;&lt;span class=&#8217;line&#8217;&gt;$ cd _deploy
+&lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;$ vi .git/config&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
+
+
+&lt;p&gt;Then edit the url from http:// format to git format.&lt;/p&gt;
+</content>
+  </entry>
+  
+  <entry>
     <title>First Post</title>
     <link href="http://edk.github.com/blog/2012/06/17/first-jekyll-post/"/>
     <updated>2012-06-17T00:00:00-07:00</updated>
     <id>http://edk.github.com/blog/2012/06/17/first-jekyll-post</id>
-    <content type="html">&lt;p&gt;First Post to github pages, using OctoBlog.  My old blog, self-hosted wordpress on some shared server somewhere is lost to the mists of time.  Fortunately, I don&amp;#8217;t think much of value was lost.&lt;/p&gt;
+    <content type="html">&lt;p&gt;First Post to github pages, using OctoBlog.&lt;/p&gt;
+
+&lt;p&gt;My old blog, self-hosted wordpress on some shared server somewhere is lost to the mists of time.&lt;/p&gt;
+
+&lt;p&gt;Fortunately, I don&amp;#8217;t think much of value was lost :P.&lt;/p&gt;
 </content>
   </entry>
   

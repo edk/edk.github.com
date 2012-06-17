@@ -5,7 +5,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>HTML5 Video + Flash Replcement test - edk blogs</title>
+  <title>configuring octoblog to not ask for github username and password - edk blogs</title>
   <meta name="author" content="EDK">
   
 
@@ -16,7 +16,7 @@
 
   
 
-  <link rel="canonical" href="http://edk.github.com/test/video.html"/>
+  <link rel="canonical" href="http://edk.github.com/blog/2012/06/17/configuring-octoblog-to-not-ask-for-github-username-and-password/"/>
   <link href="/favicon.png" rel="shortcut icon" />
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -63,28 +63,79 @@
   <div id="main">
     <div id="content">
       <div>
-<article>
+<article class="hentry">
   
   <header>
-    <h1 class="entry-title">HTML5 Video + Flash Replcement Test</h1>
+    
+      <h1 class="entry-title">Configuring Octoblog to Not Ask for Github Username and Password</h1>
+      
+  <div class="rdbWrapper" data-show-read="1" data-show-send-to-kindle="0" data-show-print="0" data-show-email="0" data-orientation="0" data-version="1" data-bg-color="transparent"></div>
+  <script type="text/javascript">(function() {var s = document.getElementsByTagName("script")[0],rdb = document.createElement("script"); rdb.type = "text/javascript"; rdb.async = true; rdb.src = document.location.protocol + "//www.readability.com/embed.js"; s.parentNode.insertBefore(rdb, s); })();</script>
+
+
+    
+    
+      <p class="meta">
+
+
+
+
+  
+
+
+
+<time datetime="2012-06-17T10:47:00-07:00" pubdate  data-updated="true" >Jun 17<span>th</span>, 2012</time></p>
     
   </header>
+
+
+<div class="entry-content">
+  <p>After some fumbling around with OctoBlog and github pages, I soon got into the flow with &#8216;rake generate &amp;&amp; rake deploy&#8217;</p>
+
+<p>The first annoyance I ran into was having to enter my github username and pasword on every deploy.</p>
+
+<p>To confirm to myself that this really works, and anyone who happens to run into the same problem, here&#8217;s what I did:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ cd _deploy
+</span><span class='line'>$ vi .git/config</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then edit the url from http:// format to git format.</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <video width='640' height='320' preload='none' controls poster=' http://s3.imathis.com/video/zero-to-fancy-buttons.png'><source src='http://s3.imathis.com/video/zero-to-fancy-buttons.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'/></video>
 
-<p>You&#8217;re probably using a browser which supports HTML5 video and you&#8217;re looking at this page wondering if it really works.
-Reloading the page with the url hash <a href="#flash-test">#flash-test</a> and you&#8217;ll get to see the flash player fallback.</p>
+<span class="byline author vcard">Posted by <span class="fn">EDK</span></span>
 
-<h3>Here&#8217;s a flash video embed</h3>
-<iframe src="http://player.vimeo.com/video/18481132?title=0&amp;byline=0&amp;portrait=0" width="400" height="225" frameborder="0"></iframe><p><a href="http://vimeo.com/18481132">Freelance Whales - Enzymes</a> from <a href="http://vimeo.com/neuefilms">NEUE</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
+      
 
-<h3>A Vimeo embed</h3>
-<object width="400" height="225"><param name="allowfullscreen" value="true" /><param name="allowscriptaccess" value="always" /><param name="movie" value="http://vimeo.com/moogaloop.swf?clip_id=18481132&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" /><embed src="http://vimeo.com/moogaloop.swf?clip_id=18481132&amp;server=vimeo.com&amp;show_title=0&amp;show_byline=0&amp;show_portrait=0&amp;color=00adef&amp;fullscreen=1&amp;autoplay=0&amp;loop=0" type="application/x-shockwave-flash" allowfullscreen="true" allowscriptaccess="always" width="400" height="225"></embed></object><p><a href="http://vimeo.com/18481132">Freelance Whales - Enzymes</a> from <a href="http://vimeo.com/neuefilms">NEUE</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
 
-<h3>A YouTube embed</h3>
-<iframe width="560" height="349" src="http://www.youtube.com/embed/mpaPBCBjSVc" frameborder="0" allowfullscreen></iframe>
+
 
   
+
+
+
+
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+</div>
+
+    
+  </footer>
 </article>
 
 </div>
