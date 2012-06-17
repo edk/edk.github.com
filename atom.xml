@@ -4,7 +4,7 @@
   <title>edk blogs</title>
   <link href="http://edk.github.com/atom.xml" rel="self"/>
   <link href="http://edk.github.com/"/>
-  <updated>2012-06-17T10:22:30-07:00</updated>
+  <updated>2012-06-17T10:24:46-07:00</updated>
   <id>http://edk.github.com/</id>
   <author>
     <name>EDK</name>
@@ -14,9 +14,9 @@
   
   <entry>
     <title>First Post</title>
-    <link href="http://edk.github.com/blog/2012/06/17/ireland-in-the-works/"/>
+    <link href="http://edk.github.com/blog/2012/06/17/first-jekyll-post/"/>
     <updated>2012-06-17T00:00:00-07:00</updated>
-    <id>http://edk.github.com/blog/2012/06/17/ireland-in-the-works</id>
+    <id>http://edk.github.com/blog/2012/06/17/first-jekyll-post</id>
     <content type="html">&lt;p&gt;First Post to github pages, using OctoBlog.  My old blog, self-hosted wordpress on some shared server somewhere is lost to the mists of time.  Fortunately, I don&amp;#8217;t think much of value was lost.&lt;/p&gt;
 </content>
   </entry>
