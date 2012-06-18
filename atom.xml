@@ -4,7 +4,7 @@
   <title>edk blogs</title>
   <link href="http://edk.github.com/atom.xml" rel="self"/>
   <link href="http://edk.github.com/"/>
-  <updated>2012-06-17T14:58:46-07:00</updated>
+  <updated>2012-06-17T17:00:47-07:00</updated>
   <id>http://edk.github.com/</id>
   <author>
     <name>EDK</name>
@@ -29,7 +29,7 @@
 &lt;/span&gt;&lt;span class=&#8217;line&#8217;&gt;$ vi .git/config&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/figure&gt;
 
 
-&lt;p&gt;Then edit the url from http:// format to git format.&lt;/p&gt;
+&lt;p&gt;Then edit the url from http:// format to git format.  And no, this really has nothing to do with OctoBlog, it&amp;#8217;s simply configuring the deploy project properly.&lt;/p&gt;
 </content>
   </entry>
   
