@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Becoming a better programmer - edk blogs</title>
+  <meta name="author" content="EDK">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+  <link rel="canonical" href="http://edk.github.com/blog/2012/09/09/becoming-a-better-programmer/"/>
+  <link href="/favicon.png" rel="shortcut icon" />
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="http://s3.amazonaws.com/ender-js/jeesh.min.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="/atom.xml" rel="alternate" title="edk blogs" type="application/atom+xml"/>
+  
+
+  
+
+  
+
+  <!--Fonts from Google's Web font directory at http://google.com/webfonts -->
+<link href='http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+<link href='http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic' rel='stylesheet' type='text/css'>
+
+</head>
+
+<body  >
+  <header><hgroup>
+  <h1 style="font-size:4em; padding-bottom:0em;"><a href="/">edk blogs</a></h1>
+  
+    <h2>Using the hacker blogging framework.</h2>
+  
+</hgroup>
+
+</header>
+  <nav role=navigation><ul role=subscription data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+<form action="http://google.com/search" method="get">
+  <fieldset role="site-search">
+    <input type="hidden" name="q" value="site:edk.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+<ul role=main-navigation>
+  <li><a href="/">Home</a></li>
+  <li><a href="/blog/archives">Blog</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry">
+  
+  <header>
+    
+      <h1 class="entry-title">Becoming a Better Programmer</h1>
+      
+  <div class="rdbWrapper" data-show-read="1" data-show-send-to-kindle="0" data-show-print="0" data-show-email="0" data-orientation="0" data-version="1" data-bg-color="transparent"></div>
+  <script type="text/javascript">(function() {var s = document.getElementsByTagName("script")[0],rdb = document.createElement("script"); rdb.type = "text/javascript"; rdb.async = true; rdb.src = document.location.protocol + "//www.readability.com/embed.js"; s.parentNode.insertBefore(rdb, s); })();</script>
+
+
+    
+    
+      <p class="meta">
+
+
+
+
+  
+
+
+
+<time datetime="2012-09-09T12:26:00-07:00" pubdate  data-updated="true" >Sep 9<span>th</span>, 2012</time></p>
+    
+  </header>
+
+
+<div class="entry-content">
+  <p>This is something I&#8217;ve asked myself, as well as being asked this.</p>
+
+<p>Whether you&#8217;re programming for a living or as a hobby, you&#8217;ll want to consider how to &#8216;hack&#8217; yourself to improve your efficiency and effectiveness.  Over the past couple of years, I&#8217;ve interviewed quite a lot of people, and sadly, I think many of them were not invested in themselves and their learning habits and aren&#8217;t able to pick things up as quickly as todays environment demands.</p>
+
+<p>And I don&#8217;t consider myself a great programmer.  I&#8217;ve improved markedly over the past few years, but I&#8217;ve still got more to learn and improve.  I&#8217;ve been leveling up, but I haven&#8217;t topped out yet :)</p>
+
+<p>Here follows a list of some of the things I think are important in no particular order (I love lists).  Some of this is Ruby specific, but some is generally applicable.</p>
+
+<h3>Read API documentation.</h3>
+
+<p>For example, reading the Ruby library documentation for <a href="http://ruby-doc.org/core-1.9.3/Enumerable.html">Enumerable</a> is absolutely critical as is reading and understanding the <a href="http://guides.rubyonrails.org/active_record_querying.html">Ruby Guides</a> and <a href="http://apidock.com/rails/ActiveRecord/Base">ActiveRecord</a> API docs.  You cannot get by reading just blogs and watching screencasts.</p>
+
+<h3>When there is an error, read and understand what the ruby interpreter is trying telling you.</h3>
+
+<p>My initial work in ruby was quite frustrating, with my only previous experience in standard languages such as C, C++ and PHP.  The ruby language is grammatically complex and so the interpreter isn&#8217;t able point to this line and say, <em>&#8220;this is your problem, right here!&#8221;</em> as the compilers I was used to.</p>
+
+<p>Instead I got multi-page long stacktraces (this was in Rails 2) that were bewildering.  As with many things, embrace the pain, and your brain will start to filter out the irrelevant information and start to pick out the important bits.</p>
+
+<h3>When you run into a problem, step back and try to understand why it&#8217;s happening.</h3>
+
+<p>The two most important questions I try to answer when encountering unexpected behavior (aka bug or defect) are <strong><em>WHAT</em></strong> and <strong><em>WHY</em></strong>.</p>
+
+<p>What is happening?</p>
+
+<p>This requires understanding the interactions and the context that lead up to the error.  This often why when I get a bug report, if it is not detailed enough, have to either throw it back with a &#8216;need more info&#8217; or spend hours (sometimes days) trying to reproduce the problem.  At work since we don&#8217;t have access to production logs (see <a href="http://opsantipatterns.com/">ops anti-patterns</a> ), this takes much longer than it should.</p>
+
+<p>Why is it happening?</p>
+
+<p>This needs to be understood in order to take correct action to resolve the issue, and is often the harder question to answer.  Especially if you&#8217;re in code that you haven&#8217;t written yourself, whether that is 3rd party library code, or code inherited in a large application.</p>
+
+<h3>Know your tools</h3>
+
+<p>This is something that the <a href="http://pragprog.com/the-pragmatic-programmer">pragmatic programmer book</a> mentions.  In my opinion, you need to understand at least one editor well enough to not waste time with all the text processing you&#8217;ll need to do.</p>
+
+<p>IMO, the most important thing you&#8217;ll need to be able to do is quickly and efficiently search for strings in files, across files, as well as string patterns using regexes.</p>
+
+<p>If you can learn more than one editor well, even better.  I use both vim and <a href="http://www.sublimetext.com/">Sublime Text2</a> for everyday text editing tasks.  Previously, I used the Netbeans IDE because it actually parsed the script files into an AST which allowed me to follow symbols back to definitions, even jumping into gems.  I learned quite a bit about ActiveRecord and how rails worked by doing this.</p>
+
+<p>But I seldom do that any longer.  Finding ruby code is as easy as global find in Sublime, and <a href="http://betterthangrep.com/">Ack</a> in vim.  If I need to follow code into a gem, <code>bundle open</code> is da shit.</p>
+
+<h3>Debugging techniques</h3>
+
+<p>This can be an entire post by itself, so I&#8217;ll just touch on a couple of things to check up on.</p>
+
+<p>Debuggers</p>
+
+<ul>
+<li>In ruby, <code>require 'debugger'</code>, not the outdated &#8216;ruby-debug&#8217;.  I often use the debugger as a first step to determine why something is not behaving as expected.  Just drop in a <code>debugger</code> line trigger the debugger.  Just be aware the debugger stops execution at the line <em>following</em> the debugger call.  So if you put the debugger line at the end of a block, you&#8217;ll end up in an entirely different function than you expected.</li>
+<li>In JS, just put debugger anywhere and in Firefox or Chrome it will just stop on that line.</li>
+</ul>
+
+
+<p>Logging</p>
+
+<ul>
+<li>Ruby: you can log use <code>Rails.logger.error</code> , use <code>puts</code>, or even just raise an exception with the variable you&#8217;re interested in.</li>
+<li>JS: console.log &#8211; pretty simple, but don&#8217;t forget to take it out, because it will cause a js exception in IE.  Another tip: pass in js objects that you want to inspect as separate parameters, not coercing them into strings.  e.g. <code>console.log("some value = ", some_value)</code> instead of <code>console.log("some value" + some_value)</code></li>
+</ul>
+
+
+<h3>Have the right attitude</h3>
+
+<p>It can be hard at times, especially when starting out your career to absorb and make use of all the information available.</p>
+
+<p>While I&#8217;m not an advocate of being uncontrollably positive, I don&#8217;t think having a negative attitude directed at yourself or at a problem is constructive.  Try to take each challenge as it comes, knowing that you will probably solve it sooner or later.  Take in the journey, knowing that the struggle will improve your skills later.</p>
+
+<p>Related to having the right attitude, in a commercial environment you want to avoid being personally invested in code you have written (ie. no ego), but take responsibility for all code that you come across, regardless of if came from you or not.</p>
+
+<p>Put another way, avoid immediately looking to refactor throw out other peoples code that you may not understand or agree with.  There may be thing or two to learn, and it may have been written that way for a good reason that is not immediately obvious.  Not to say all code is good and never needs to be refactored.</p>
+
+<h3>Searching properly</h3>
+
+<p>Improving you google-fu will help you avoid wasting time.  Unfortunately, I can&#8217;t explain how I search for things, but if what you&#8217;re looking for doesn&#8217;t come up in the first page of results, your search terms need adjusting.  Looking through page after page of search results <em>probably</em> won&#8217;t be a good use of your time.</p>
+
+<h3>Read source code</h3>
+
+<p>I think this is probably the biggest reason I&#8217;ve improved my coding and design skills.  Read lots of code.  Lots of other people&#8217;s code.  Understand it.  Modify it to understand it.</p>
+
+<p>Doing this well will reduce the amount you will need to google for an answer.  These days if I&#8217;m using 3rd party code, instead of checking google or stackoverflow, I&#8217;ll just bundle open the gem to see how it works and answer the question that way.</p>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">EDK</span></span>
+
+      
+
+
+
+
+  
+
+
+
+
+      
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+</div>
+
+    
+  </footer>
+</article>
+
+</div>
+
+<aside role=sidebar>
+  
+    <section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2012/09/09/becoming-a-better-programmer/">Becoming a better programmer</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/17/configuring-octoblog-to-not-ask-for-github-username-and-password/">configuring octoblog to not ask for github username and password</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2012/06/17/first-jekyll-post/">First Post</a>
+      </li>
+    
+  </ul>
+</section>
+
+
+
+
+
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer><p>
+  Copyright &copy; 2012 - EDK -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+</body>
+</html>

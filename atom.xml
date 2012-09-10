@@ -4,13 +4,100 @@
   <title>edk blogs</title>
   <link href="http://edk.github.com/atom.xml" rel="self"/>
   <link href="http://edk.github.com/"/>
-  <updated>2012-06-17T17:00:47-07:00</updated>
+  <updated>2012-09-09T20:48:32-07:00</updated>
   <id>http://edk.github.com/</id>
   <author>
     <name>EDK</name>
     
   </author>
 
+  
+  <entry>
+    <title>Becoming a better programmer</title>
+    <link href="http://edk.github.com/blog/2012/09/09/becoming-a-better-programmer/"/>
+    <updated>2012-09-09T12:26:00-07:00</updated>
+    <id>http://edk.github.com/blog/2012/09/09/becoming-a-better-programmer</id>
+    <content type="html">&lt;p&gt;This is something I&amp;#8217;ve asked myself, as well as being asked this.&lt;/p&gt;
+
+&lt;p&gt;Whether you&amp;#8217;re programming for a living or as a hobby, you&amp;#8217;ll want to consider how to &amp;#8216;hack&amp;#8217; yourself to improve your efficiency and effectiveness.  Over the past couple of years, I&amp;#8217;ve interviewed quite a lot of people, and sadly, I think many of them were not invested in themselves and their learning habits and aren&amp;#8217;t able to pick things up as quickly as todays environment demands.&lt;/p&gt;
+
+&lt;p&gt;And I don&amp;#8217;t consider myself a great programmer.  I&amp;#8217;ve improved markedly over the past few years, but I&amp;#8217;ve still got more to learn and improve.  I&amp;#8217;ve been leveling up, but I haven&amp;#8217;t topped out yet :)&lt;/p&gt;
+
+&lt;p&gt;Here follows a list of some of the things I think are important in no particular order (I love lists).  Some of this is Ruby specific, but some is generally applicable.&lt;/p&gt;
+
+&lt;h3&gt;Read API documentation.&lt;/h3&gt;
+
+&lt;p&gt;For example, reading the Ruby library documentation for &lt;a href=&quot;http://ruby-doc.org/core-1.9.3/Enumerable.html&quot;&gt;Enumerable&lt;/a&gt; is absolutely critical as is reading and understanding the &lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html&quot;&gt;Ruby Guides&lt;/a&gt; and &lt;a href=&quot;http://apidock.com/rails/ActiveRecord/Base&quot;&gt;ActiveRecord&lt;/a&gt; API docs.  You cannot get by reading just blogs and watching screencasts.&lt;/p&gt;
+
+&lt;h3&gt;When there is an error, read and understand what the ruby interpreter is trying telling you.&lt;/h3&gt;
+
+&lt;p&gt;My initial work in ruby was quite frustrating, with my only previous experience in standard languages such as C, C++ and PHP.  The ruby language is grammatically complex and so the interpreter isn&amp;#8217;t able point to this line and say, &lt;em&gt;&amp;#8220;this is your problem, right here!&amp;#8221;&lt;/em&gt; as the compilers I was used to.&lt;/p&gt;
+
+&lt;p&gt;Instead I got multi-page long stacktraces (this was in Rails 2) that were bewildering.  As with many things, embrace the pain, and your brain will start to filter out the irrelevant information and start to pick out the important bits.&lt;/p&gt;
+
+&lt;h3&gt;When you run into a problem, step back and try to understand why it&amp;#8217;s happening.&lt;/h3&gt;
+
+&lt;p&gt;The two most important questions I try to answer when encountering unexpected behavior (aka bug or defect) are &lt;strong&gt;&lt;em&gt;WHAT&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;WHY&lt;/em&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;What is happening?&lt;/p&gt;
+
+&lt;p&gt;This requires understanding the interactions and the context that lead up to the error.  This often why when I get a bug report, if it is not detailed enough, have to either throw it back with a &amp;#8216;need more info&amp;#8217; or spend hours (sometimes days) trying to reproduce the problem.  At work since we don&amp;#8217;t have access to production logs (see &lt;a href=&quot;http://opsantipatterns.com/&quot;&gt;ops anti-patterns&lt;/a&gt; ), this takes much longer than it should.&lt;/p&gt;
+
+&lt;p&gt;Why is it happening?&lt;/p&gt;
+
+&lt;p&gt;This needs to be understood in order to take correct action to resolve the issue, and is often the harder question to answer.  Especially if you&amp;#8217;re in code that you haven&amp;#8217;t written yourself, whether that is 3rd party library code, or code inherited in a large application.&lt;/p&gt;
+
+&lt;h3&gt;Know your tools&lt;/h3&gt;
+
+&lt;p&gt;This is something that the &lt;a href=&quot;http://pragprog.com/the-pragmatic-programmer&quot;&gt;pragmatic programmer book&lt;/a&gt; mentions.  In my opinion, you need to understand at least one editor well enough to not waste time with all the text processing you&amp;#8217;ll need to do.&lt;/p&gt;
+
+&lt;p&gt;IMO, the most important thing you&amp;#8217;ll need to be able to do is quickly and efficiently search for strings in files, across files, as well as string patterns using regexes.&lt;/p&gt;
+
+&lt;p&gt;If you can learn more than one editor well, even better.  I use both vim and &lt;a href=&quot;http://www.sublimetext.com/&quot;&gt;Sublime Text2&lt;/a&gt; for everyday text editing tasks.  Previously, I used the Netbeans IDE because it actually parsed the script files into an AST which allowed me to follow symbols back to definitions, even jumping into gems.  I learned quite a bit about ActiveRecord and how rails worked by doing this.&lt;/p&gt;
+
+&lt;p&gt;But I seldom do that any longer.  Finding ruby code is as easy as global find in Sublime, and &lt;a href=&quot;http://betterthangrep.com/&quot;&gt;Ack&lt;/a&gt; in vim.  If I need to follow code into a gem, &lt;code&gt;bundle open&lt;/code&gt; is da shit.&lt;/p&gt;
+
+&lt;h3&gt;Debugging techniques&lt;/h3&gt;
+
+&lt;p&gt;This can be an entire post by itself, so I&amp;#8217;ll just touch on a couple of things to check up on.&lt;/p&gt;
+
+&lt;p&gt;Debuggers&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;In ruby, &lt;code&gt;require &#8216;debugger&#8217;&lt;/code&gt;, not the outdated &amp;#8216;ruby-debug&amp;#8217;.  I often use the debugger as a first step to determine why something is not behaving as expected.  Just drop in a &lt;code&gt;debugger&lt;/code&gt; line trigger the debugger.  Just be aware the debugger stops execution at the line &lt;em&gt;following&lt;/em&gt; the debugger call.  So if you put the debugger line at the end of a block, you&amp;#8217;ll end up in an entirely different function than you expected.&lt;/li&gt;
+&lt;li&gt;In JS, just put debugger anywhere and in Firefox or Chrome it will just stop on that line.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;p&gt;Logging&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Ruby: you can log use &lt;code&gt;Rails.logger.error&lt;/code&gt; , use &lt;code&gt;puts&lt;/code&gt;, or even just raise an exception with the variable you&amp;#8217;re interested in.&lt;/li&gt;
+&lt;li&gt;JS: console.log &amp;#8211; pretty simple, but don&amp;#8217;t forget to take it out, because it will cause a js exception in IE.  Another tip: pass in js objects that you want to inspect as separate parameters, not coercing them into strings.  e.g. &lt;code&gt;console.log(&quot;some value = &quot;, some_value)&lt;/code&gt; instead of &lt;code&gt;console.log(&quot;some value&quot; + some_value)&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+
+&lt;h3&gt;Have the right attitude&lt;/h3&gt;
+
+&lt;p&gt;It can be hard at times, especially when starting out your career to absorb and make use of all the information available.&lt;/p&gt;
+
+&lt;p&gt;While I&amp;#8217;m not an advocate of being uncontrollably positive, I don&amp;#8217;t think having a negative attitude directed at yourself or at a problem is constructive.  Try to take each challenge as it comes, knowing that you will probably solve it sooner or later.  Take in the journey, knowing that the struggle will improve your skills later.&lt;/p&gt;
+
+&lt;p&gt;Related to having the right attitude, in a commercial environment you want to avoid being personally invested in code you have written (ie. no ego), but take responsibility for all code that you come across, regardless of if came from you or not.&lt;/p&gt;
+
+&lt;p&gt;Put another way, avoid immediately looking to refactor throw out other peoples code that you may not understand or agree with.  There may be thing or two to learn, and it may have been written that way for a good reason that is not immediately obvious.  Not to say all code is good and never needs to be refactored.&lt;/p&gt;
+
+&lt;h3&gt;Searching properly&lt;/h3&gt;
+
+&lt;p&gt;Improving you google-fu will help you avoid wasting time.  Unfortunately, I can&amp;#8217;t explain how I search for things, but if what you&amp;#8217;re looking for doesn&amp;#8217;t come up in the first page of results, your search terms need adjusting.  Looking through page after page of search results &lt;em&gt;probably&lt;/em&gt; won&amp;#8217;t be a good use of your time.&lt;/p&gt;
+
+&lt;h3&gt;Read source code&lt;/h3&gt;
+
+&lt;p&gt;I think this is probably the biggest reason I&amp;#8217;ve improved my coding and design skills.  Read lots of code.  Lots of other people&amp;#8217;s code.  Understand it.  Modify it to understand it.&lt;/p&gt;
+
+&lt;p&gt;Doing this well will reduce the amount you will need to google for an answer.  These days if I&amp;#8217;m using 3rd party code, instead of checking google or stackoverflow, I&amp;#8217;ll just bundle open the gem to see how it works and answer the question that way.&lt;/p&gt;
+</content>
+  </entry>
   
   <entry>
     <title>configuring octoblog to not ask for github username and password</title>
